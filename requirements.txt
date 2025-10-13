@@ -22,6 +22,15 @@ email-validator==2.0.0
 bcrypt==4.0.1
 itsdangerous==2.1.2
 
+# ======== Amazon S3 (UNTUK UPLOAD GAMBAR) ========
+boto3
+botocore
+s3transfer
+jmespath
+urllib3
+certifi
+six
+python-dateutil
 # === PDF GENERATION (UNTUK RECEIPT PDF) ===
 reportlab==4.0.4
 Pillow==10.3.0
