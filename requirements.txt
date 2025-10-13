@@ -10,6 +10,8 @@ Flask-Caching==2.3.0
 SQLAlchemy==2.0.23
 Werkzeug==2.3.7
 psycopg2-binary==2.9.7
+redis==5.3.1
+
     # Alternative for PostgreSQL: pip install psycopg2-binary
     # For MySQL: pip install mysqlclient
     # For SQLite: built-in (no extra package needed)
