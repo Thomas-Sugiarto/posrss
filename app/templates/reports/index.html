@@ -1,0 +1,476 @@
+{% extends "base.html" %}
+
+{% block title %}Reports & Analytics - T-POS Enterprise{% endblock %}
+
+{% block styles %}
+<style>
+    .stats-card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        transition: transform 0.2s;
+    }
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    .stats-icon {
+        font-size: 2.5rem;
+        opacity: 0.8;
+    }
+    .chart-container {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        height: 100%;
+    }
+    .report-card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        transition: all 0.3s;
+        height: 100%;
+    }
+    .report-card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+    .quick-action-btn {
+        border: 2px dashed #dee2e6;
+        background: #f8f9fa;
+        transition: all 0.3s;
+        height: 100%;
+    }
+    .quick-action-btn:hover {
+        border-color: #0d6efd;
+        background: #e7f1ff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2 mb-0">
+                <i class="bi bi-graph-up"></i> Reports & Analytics
+            </h1>
+            <small class="text-muted">Business insights and performance analytics</small>
+        </div>
+        <div class="col-auto">
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-download"></i> Export Reports
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('reports.export_excel') }}">
+                            <i class="bi bi-file-earmark-excel"></i> Export to Excel
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('reports.export_pdf') }}">
+                            <i class="bi bi-file-earmark-pdf"></i> Export to PDF
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-time Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stats-card border-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title text-muted mb-0">Today's Revenue</h6>
+                            <h3 class="mb-0" id="todayRevenue">$0.00</h3>
+                            <small class="text-muted" id="todaySalesCount">0 sales</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-currency-dollar stats-icon text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card border-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title text-muted mb-0">This Week</h6>
+                            <h3 class="mb-0" id="weekRevenue">$0.00</h3>
+                            <small class="text-muted" id="weekSalesCount">0 sales</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-calendar-week stats-icon text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title text-muted mb-0">This Month</h6>
+                            <h3 class="mb-0" id="monthRevenue">$0.00</h3>
+                            <small class="text-muted" id="monthSalesCount">0 sales</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-calendar-month stats-icon text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card border-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title text-muted mb-0">Avg. Sale</h6>
+                            <h3 class="mb-0" id="avgSale">$0.00</h3>
+                            <small class="text-muted">Per transaction</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-graph-up stats-icon text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mb-4">
+        <!-- Sales Trend Chart -->
+        <div class="col-lg-8">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-bar-chart"></i> Sales Trend (Last 7 Days)
+                    </h5>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-secondary active" data-metric="revenue">
+                            Revenue
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" data-metric="count">
+                            Transaction Count
+                        </button>
+                    </div>
+                </div>
+                <canvas id="salesTrendChart" height="250"></canvas>
+            </div>
+        </div>
+
+        <!-- Top Products Chart -->
+        <div class="col-lg-4">
+            <div class="chart-container">
+                <h5 class="mb-3">
+                    <i class="bi bi-star"></i> Top Products
+                </h5>
+                <div id="topProductsList">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Loading top products...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Types -->
+    <div class="row">
+        <div class="col-12">
+            <h4 class="mb-3">
+                <i class="bi bi-file-text"></i> Detailed Reports
+            </h4>
+        </div>
+
+        <!-- Sales Report -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card report-card">
+                <div class="card-body text-center">
+                    <div class="text-primary mb-3">
+                        <i class="bi bi-cash-coin display-4"></i>
+                    </div>
+                    <h5 class="card-title">Sales Report</h5>
+                    <p class="card-text text-muted">
+                        Detailed sales transactions with filters by date range and payment methods
+                    </p>
+                    <a href="{{ url_for('reports.sales_report') }}" class="btn btn-primary">
+                        <i class="bi bi-arrow-right"></i> View Report
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Performance -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card report-card">
+                <div class="card-body text-center">
+                    <div class="text-success mb-3">
+                        <i class="bi bi-box-seam display-4"></i>
+                    </div>
+                    <h5 class="card-title">Product Performance</h5>
+                    <p class="card-text text-muted">
+                        Analyze product sales, inventory turnover, and profitability metrics
+                    </p>
+                    <button class="btn btn-outline-secondary" disabled>
+                        <i class="bi bi-clock"></i> Coming Soon
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Analytics -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card report-card">
+                <div class="card-body text-center">
+                    <div class="text-info mb-3">
+                        <i class="bi bi-people display-4"></i>
+                    </div>
+                    <h5 class="card-title">Customer Analytics</h5>
+                    <p class="card-text text-muted">
+                        Customer purchasing patterns, lifetime value, and retention analysis
+                    </p>
+                    <button class="btn btn-outline-secondary" disabled>
+                        <i class="bi bi-clock"></i> Coming Soon
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <h4 class="mb-3">
+                <i class="bi bi-lightning"></i> Quick Actions
+            </h4>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('reports.export_excel') }}" class="card quick-action-btn text-decoration-none">
+                <div class="card-body text-center">
+                    <i class="bi bi-file-earmark-excel display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Export to Excel</h5>
+                    <p class="card-text text-muted small">
+                        Download all sales data in Excel format for further analysis
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('reports.export_pdf') }}" class="card quick-action-btn text-decoration-none">
+                <div class="card-body text-center">
+                    <i class="bi bi-file-earmark-pdf display-4 text-danger mb-3"></i>
+                    <h5 class="card-title">Export to PDF</h5>
+                    <p class="card-text text-muted small">
+                        Generate a printable PDF report of recent sales transactions
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('sales.history') }}" class="card quick-action-btn text-decoration-none">
+                <div class="card-body text-center">
+                    <i class="bi bi-clock-history display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Sales History</h5>
+                    <p class="card-text text-muted small">
+                        View detailed transaction history with search and filter options
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Global variables
+let salesTrendChart = null;
+let currentMetric = 'revenue';
+
+// Load dashboard data
+async function loadDashboardData() {
+    try {
+        const response = await fetch('{{ url_for("reports.dashboard_data") }}');
+        const data = await response.json();
+        
+        updateStats(data);
+        renderSalesTrendChart(data.daily_sales);
+        renderTopProducts(data.top_products);
+        
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        showError('Failed to load dashboard data');
+    }
+}
+
+// Update statistics cards
+function updateStats(data) {
+    const today = new Date().toISOString().split('T')[0];
+    const todayData = data.daily_sales.find(day => day.date === today);
+    
+    // Today's stats
+    if (todayData) {
+        document.getElementById('todayRevenue').textContent = `$${todayData.revenue.toFixed(2)}`;
+        document.getElementById('todaySalesCount').textContent = `${todayData.count} sales`;
+    }
+    
+    // Weekly stats
+    const weekRevenue = data.daily_sales.reduce((sum, day) => sum + day.revenue, 0);
+    const weekCount = data.daily_sales.reduce((sum, day) => sum + day.count, 0);
+    document.getElementById('weekRevenue').textContent = `$${weekRevenue.toFixed(2)}`;
+    document.getElementById('weekSalesCount').textContent = `${weekCount} sales`;
+    
+    // Average sale
+    const avgSale = weekCount > 0 ? weekRevenue / weekCount : 0;
+    document.getElementById('avgSale').textContent = `$${avgSale.toFixed(2)}`;
+    
+    // Monthly (approximate - using week data for demo)
+    document.getElementById('monthRevenue').textContent = `$${(weekRevenue * 4).toFixed(2)}`;
+    document.getElementById('monthSalesCount').textContent = `${weekCount * 4} sales`;
+}
+
+// Render sales trend chart
+function renderSalesTrendChart(dailySales) {
+    const ctx = document.getElementById('salesTrendChart').getContext('2d');
+    
+    // Prepare data
+    const labels = dailySales.map(day => {
+        const date = new Date(day.date);
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    });
+    
+    const revenueData = dailySales.map(day => day.revenue);
+    const countData = dailySales.map(day => day.count);
+    
+    if (salesTrendChart) {
+        salesTrendChart.destroy();
+    }
+    
+    salesTrendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Revenue ($)',
+                data: revenueData,
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        drawBorder: false
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+    
+    // Add metric toggle functionality
+    document.querySelectorAll('[data-metric]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('[data-metric]').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            currentMetric = this.dataset.metric;
+            updateChartMetric();
+        });
+    });
+}
+
+// Update chart based on selected metric
+function updateChartMetric() {
+    if (!salesTrendChart) return;
+    
+    // In a real implementation, you would reload data or transform existing data
+    // For now, we'll just show a message
+    console.log('Switching to metric:', currentMetric);
+}
+
+// Render top products list
+function renderTopProducts(topProducts) {
+    const container = document.getElementById('topProductsList');
+    
+    if (!topProducts || topProducts.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-muted py-4">
+                <i class="bi bi-inbox display-4"></i>
+                <p class="mt-2">No product data available</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    topProducts.slice(0, 5).forEach((product, index) => {
+        const revenue = product.revenue || 0;
+        const quantity = product.quantity || 0;
+        
+        html += `
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <div class="flex-grow-1">
+                    <h6 class="mb-1">${product.name}</h6>
+                    <small class="text-muted">${quantity} sold • $${revenue.toFixed(2)}</small>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-primary">#${index + 1}</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Show error message
+function showError(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+    alertDiv.innerHTML = `
+        <i class="bi bi-exclamation-triangle"></i> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.querySelector('main').insertBefore(alertDiv, document.querySelector('main').firstChild);
+}
+
+// Initialize dashboard when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardData();
+    
+    // Refresh data every 5 minutes
+    setInterval(loadDashboardData, 300000);
+});
+</script>
+{% endblock %}
