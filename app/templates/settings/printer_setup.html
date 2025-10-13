@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}Printer Setup - T-POS Enterprise{% endblock %}
+
+{% block styles %}
+<style>
+    .printer-status {
+        border-left: 4px solid;
+    }
+    .status-connected {
+        border-left-color: #198754;
+    }
+    .status-disconnected {
+        border-left-color: #dc3545;
+    }
+    .test-receipt {
+        font-family: 'Courier New', monospace;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('settings.index') }}">Settings</a></li>
+                    <li class="breadcrumb-item active">Printer Setup</li>
+                </ol>
+            </nav>
+            
+            <h1 class="h2 mb-0">
+                <i class="bi bi-printer"></i> Printer Setup
+            </h1>
+            <small class="text-muted">Configure receipt printer for your POS system</small>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Printer Configuration</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('settings.printer_setup') }}">
+                        <div class="mb-3">
+                            <label for="printer_type" class="form-label">Printer Type</label>
+                            <select class="form-select" id="printer_type" name="printer_type" required>
+                                <option value="">Select Printer Type</option>
+                                <option value="network" {% if tenant.printer_type == 'network' %}selected{% endif %}>Network Thermal Printer</option>
+                                <option value="usb" {% if tenant.printer_type == 'usb' %}selected{% endif %}>USB Printer</option>
+                                <option value="bluetooth" {% if tenant.printer_type == 'bluetooth' %}selected{% endif %}>Bluetooth Printer</option>
+                            </select>
+                            <div class="form-text">Select the type of printer you're using</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="printer_host" class="form-label">Printer IP Address / Host</label>
+                            <input type="text" class="form-control" id="printer_host" name="printer_host" 
+                                   value="{{ tenant.printer_settings.host if tenant.printer_settings else '' }}" 
+                                   placeholder="192.168.1.100" required>
+                            <div class="form-text">IP address of your network thermal printer</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="printer_port" class="form-label">Printer Port</label>
+                            <input type="number" class="form-control" id="printer_port" name="printer_port" 
+                                   value="{{ tenant.printer_settings.port if tenant.printer_settings else 9100 }}" 
+                                   min="1" max="65535" required>
+                            <div class="form-text">Typically 9100 for network thermal printers</div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> 
+                            <strong>Note:</strong> Make sure your printer is connected to the same network and powered on.
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('settings.index') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Settings
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Save Configuration
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <!-- Printer Status -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Printer Status</h5>
+                </div>
+                <div class="card-body">
+                    {% if tenant.printer_settings %}
+                    <div class="printer-status status-connected p-3 bg-light rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 text-success">
+                                    <i class="bi bi-check-circle"></i> Printer Configured
+                                </h6>
+                                <p class="mb-0 small">
+                                    Type: <strong>{{ tenant.printer_type|title }}</strong><br>
+                                    Host: <strong>{{ tenant.printer_settings.host }}</strong><br>
+                                    Port: <strong>{{ tenant.printer_settings.port }}</strong>
+                                </p>
+                            </div>
+                            <button type="button" class="btn btn-outline-success" id="testPrinterBtn">
+                                <i class="bi bi-printer"></i> Test Print
+                            </button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="printer-status status-disconnected p-3 bg-light rounded">
+                        <h6 class="mb-1 text-danger">
+                            <i class="bi bi-x-circle"></i> Printer Not Configured
+                        </h6>
+                        <p class="mb-0 small">Please configure your printer settings to enable receipt printing.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Test Receipt Preview -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Test Receipt Preview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="test-receipt p-3 small">
+                        <div class="text-center mb-2">
+                            <strong>{{ tenant.name }}</strong><br>
+                            {{ tenant.address or 'Your Business Address' }}<br>
+                            Tel: {{ tenant.phone or 'Your Phone Number' }}
+                        </div>
+                        <hr>
+                        <div class="mb-2">
+                            <strong>Receipt: TEST-001</strong><br>
+                            Date: {{ now.strftime('%Y-%m-%d %H:%M') }}<br>
+                            Cashier: {{ current_user.username }}
+                        </div>
+                        <hr>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>Test Product 1</span>
+                                <span>1 x $10.00</span>
+                                <span>$10.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Test Product 2</span>
+                                <span>2 x $5.00</span>
+                                <span>$10.00</span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="text-end">
+                            <strong>TOTAL: $20.00</strong><br>
+                            <small>Payment: CASH</small><br>
+                            <small>Change: $0.00</small>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <small>Thank you for your business!</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const testPrinterBtn = document.getElementById('testPrinterBtn');
+    
+    if (testPrinterBtn) {
+        testPrinterBtn.addEventListener('click', function() {
+            // Show loading state
+            const originalText = testPrinterBtn.innerHTML;
+            testPrinterBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Printing...';
+            testPrinterBtn.disabled = true;
+            
+            fetch('{{ url_for("settings.test_printer") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Test print successful!', 'success');
+                } else {
+                    showAlert('Print failed: ' + data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showAlert('Error: ' + error.message, 'danger');
+            })
+            .finally(() => {
+                // Restore button state
+                testPrinterBtn.innerHTML = originalText;
+                testPrinterBtn.disabled = false;
+            });
+        });
+    }
+    
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.querySelector('main').insertBefore(alertDiv, document.querySelector('main').firstChild);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
+});
+</script>
+{% endblock %}
