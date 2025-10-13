@@ -189,6 +189,51 @@ def create_category():
         flash('Category created successfully!', 'success')
     return redirect(url_for('products.categories'))
 
+@bp.route('/categories/update/<int:category_id>', methods=['POST'])
+@login_required
+def update_category(category_id):
+    category = Category.query.filter_by(
+        id=category_id, 
+        tenant_id=current_user.tenant_id
+    ).first_or_404()
+    
+    form = CategoryForm()
+    if form.validate_on_submit():
+        try:
+            category.name = form.name.data
+            category.description = form.description.data
+            db.session.commit()
+            flash('Category updated successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating category: {str(e)}', 'danger')
+    
+    return redirect(url_for('products.categories'))
+
+@bp.route('/categories/delete/<int:category_id>', methods=['POST'])
+@login_required
+def delete_category(category_id):
+    category = Category.query.filter_by(
+        id=category_id, 
+        tenant_id=current_user.tenant_id
+    ).first_or_404()
+    
+    # Check if category has products
+    product_count = Product.query.filter_by(category_id=category_id).count()
+    if product_count > 0:
+        flash('Cannot delete category that has products assigned to it.', 'danger')
+        return redirect(url_for('products.categories'))
+    
+    try:
+        db.session.delete(category)
+        db.session.commit()
+        flash('Category deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting category: {str(e)}', 'danger')
+    
+    return redirect(url_for('products.categories'))
+
 @bp.route('/api/search')
 @login_required
 def api_search():
