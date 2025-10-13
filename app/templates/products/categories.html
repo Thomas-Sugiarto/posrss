@@ -338,7 +338,7 @@ function editCategory(categoryId, categoryName, categoryDescription) {
     document.getElementById('editCategoryDescription').value = categoryDescription || '';
     
     // Set form action
-    document.getElementById('editCategoryForm').action = "{{ url_for('products.update_category', category_id='') }}" + categoryId;
+    document.getElementById('editCategoryForm').action = "{{ url_for('products.update_category', category_id=0) }}".replace('/0', '/' + categoryId);
     
     // Show modal
     const editModal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
