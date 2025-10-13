@@ -21,7 +21,7 @@ itsdangerous==2.1.2
 
 # === PDF GENERATION (UNTUK RECEIPT PDF) ===
 reportlab==4.0.4
-Pillow==10.0.1
+Pillow==10.3.0
 
 # === HTTP CLIENT (UNTUK PRINTER DAEMON) ===
 requests==2.31.0
