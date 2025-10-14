@@ -9,8 +9,13 @@ def superadmin_required(f):
     """Decorator untuk memastikan hanya superadmin yang bisa mengakses route."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or not current_user.is_superadmin:
-            abort(403) # Forbidden
+        if not current_user.is_authenticated:
+            abort(401)  # Unauthorized
+        
+        # Periksa apakah atribut is_superadmin ada dan True
+        if not hasattr(current_user, 'is_superadmin') or not current_user.is_superadmin:
+            abort(403)  # Forbidden
+        
         return f(*args, **kwargs)
     return decorated_function
 

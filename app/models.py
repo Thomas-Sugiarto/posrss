@@ -59,6 +59,7 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(64))
     phone = db.Column(db.String(20))
     is_active = db.Column(db.Boolean, default=True)
+    is_superadmin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
     
