@@ -2,7 +2,7 @@ import datetime
 from flask import Flask, jsonify, redirect, render_template, request, g, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect
@@ -17,6 +17,44 @@ login_manager = LoginManager()
 limiter = Limiter(key_func=get_remote_address)
 csrf = CSRFProtect()
 cache = Cache()
+
+def register_error_handlers(app):
+    """Register custom error handlers"""
+    
+    @app.errorhandler(400)
+    def bad_request(error):
+        return render_template('errors/400.html', error=error, debug=app.debug), 400
+    
+    @app.errorhandler(401)
+    def unauthorized(error):
+        return render_template('errors/401.html', error=error, debug=app.debug), 401
+    
+    @app.errorhandler(403)
+    def forbidden(error):
+        return render_template('errors/403.html', error=error, debug=app.debug), 403
+    
+    @app.errorhandler(404)
+    def not_found(error):
+        return render_template('errors/404.html', error=error, debug=app.debug), 404
+    
+    @app.errorhandler(429)
+    def too_many_requests(error):
+        return render_template('errors/429.html', error=error, debug=app.debug), 429
+    
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return render_template('errors/500.html', error=error, debug=app.debug), 500
+    
+    # Generic error handler for any unhandled exceptions
+    @app.errorhandler(Exception)
+    def handle_exception(error):
+        # Pass through HTTP errors
+        if hasattr(error, 'code'):
+            return error
+        
+        # For non-HTTP exceptions, return a 500 error
+        app.logger.error(f"Unhandled exception: {str(error)}")
+        return render_template('errors/500.html', error=error, debug=app.debug), 500
 
 def create_app(config_name=None):
     if config_name is None:
@@ -78,6 +116,8 @@ def create_app(config_name=None):
 
     from .marketplace import bp as marketplace_bp
     app.register_blueprint(marketplace_bp, url_prefix='/marketplace')
+
+    register_error_handlers(app)
     
     # Main index route
     @app.route('/')
@@ -95,24 +135,24 @@ def create_app(config_name=None):
     def health():
         return jsonify({'status': 'healthy', 'timestamp': datetime.utcnow().isoformat()})
     
-    # Error handlers
-    @app.errorhandler(404)
-    def not_found_error(error):
-        if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
-            return jsonify({'error': 'Not found'}), 404
-        return render_template('errors/404.html'), 404
-    
+    @app.context_processor
+    def inject_debug():
+        """Inject debug status into all templates"""
+        return dict(debug=app.debug)
+
+# Handle template rendering errors specifically
     @app.errorhandler(500)
-    def internal_error(error):
-        db.session.rollback()
-        if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
-            return jsonify({'error': 'Internal server error'}), 500
-        return render_template('errors/500.html'), 500
-    
-    @app.errorhandler(403)
-    def forbidden_error(error):
-        if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
-            return jsonify({'error': 'Forbidden'}), 403
-        return render_template('errors/403.html'), 403
+    def internal_server_error(error):
+        # Log the error with more context
+        app.logger.error(f"""
+        Internal Server Error:
+        Path: {request.path}
+        Method: {request.method}
+        User: {getattr(current_user, 'username', 'Anonymous')}
+        IP: {request.remote_addr}
+        Error: {str(error)}
+        """)
+        
+        return render_template('errors/500.html', error=error, debug=app.debug), 500
     
     return app
