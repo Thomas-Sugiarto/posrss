@@ -44,6 +44,46 @@
         border-color: #0d6efd;
         background: #e7f1ff;
     }
+    .chart-container {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    height: 100%;
+}
+
+/* Tambahkan style untuk chart wrapper */
+.chart-wrapper {
+    position: relative;
+    height: 300px; /* Fixed height */
+    width: 100%;
+}
+
+/* Responsive chart heights */
+@media (max-width: 768px) {
+    .chart-wrapper {
+        height: 250px;
+    }
+}
+
+/* Style untuk scrollable product list */
+#topProductsList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#topProductsList::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#topProductsList::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+#topProductsList::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
 </style>
 {% endblock %}
 
@@ -146,45 +186,48 @@
         </div>
     </div>
 
-    <!-- Charts Section -->
     <div class="row mb-4">
-        <!-- Sales Trend Chart -->
-        <div class="col-lg-8">
-            <div class="chart-container">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">
-                        <i class="bi bi-bar-chart"></i> Sales Trend (Last 7 Days)
-                    </h5>
-                    <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-outline-secondary active" data-metric="revenue">
-                            Revenue
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary" data-metric="count">
-                            Transaction Count
-                        </button>
-                    </div>
+    <!-- Sales Trend Chart -->
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                    <i class="bi bi-bar-chart"></i> Sales Trend (Last 7 Days)
+                </h5>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-outline-secondary active" data-metric="revenue">
+                        Revenue
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-metric="count">
+                        Transaction Count
+                    </button>
                 </div>
-                <canvas id="salesTrendChart" height="250"></canvas>
+            </div>
+            <!-- Tambahkan wrapper div untuk chart -->
+            <div class="chart-wrapper" style="height: 300px; position: relative;">
+                <canvas id="salesTrendChart"></canvas>
             </div>
         </div>
+    </div>
 
-        <!-- Top Products Chart -->
-        <div class="col-lg-4">
-            <div class="chart-container">
-                <h5 class="mb-3">
-                    <i class="bi bi-star"></i> Top Products
-                </h5>
-                <div id="topProductsList">
-                    <div class="text-center py-4">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-2 text-muted">Loading top products...</p>
+    <!-- Top Products Chart -->
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h5 class="mb-3">
+                <i class="bi bi-star"></i> Top Products
+            </h5>
+            <!-- Tambahkan max-height untuk daftar produk -->
+            <div id="topProductsList" style="max-height: 250px; overflow-y: auto;">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
+                    <p class="mt-2 text-muted">Loading top products...</p>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Report Types -->
     <div class="row">
@@ -346,7 +389,13 @@ function updateStats(data) {
 
 // Render sales trend chart
 function renderSalesTrendChart(dailySales) {
-    const ctx = document.getElementById('salesTrendChart').getContext('2d');
+    const canvas = document.getElementById('salesTrendChart');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size berdasarkan parent container
+    const container = canvas.parentElement;
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
     
     // Prepare data
     const labels = dailySales.map(day => {
@@ -371,15 +420,21 @@ function renderSalesTrendChart(dailySales) {
                 borderColor: '#0d6efd',
                 backgroundColor: 'rgba(13, 110, 253, 0.1)',
                 tension: 0.4,
-                fill: true
+                fill: true,
+                borderWidth: 2
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: false, // Penting: biarkan container mengatur aspect ratio
             plugins: {
                 legend: {
-                    display: true
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
                 }
             },
             scales: {
@@ -387,26 +442,26 @@ function renderSalesTrendChart(dailySales) {
                     beginAtZero: true,
                     grid: {
                         drawBorder: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 6
                     }
                 },
                 x: {
                     grid: {
                         display: false
+                    },
+                    ticks: {
+                        maxRotation: 0,
+                        minRotation: 0
                     }
                 }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'nearest'
             }
         }
-    });
-    
-    // Add metric toggle functionality
-    document.querySelectorAll('[data-metric]').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('[data-metric]').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            currentMetric = this.dataset.metric;
-            updateChartMetric();
-        });
     });
 }
 

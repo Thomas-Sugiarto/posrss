@@ -63,7 +63,7 @@ def create():
                          form=form, 
                          title='Add New Customer')
 
-@bp.route('/customers/<int:customer_id>')
+@bp.route('/customers/<string:customer_id>')
 @login_required
 def detail(customer_id):
     """View customer details"""
@@ -76,7 +76,7 @@ def detail(customer_id):
                          customer=customer,
                          title=f'Customer - {customer.name}')
 
-@bp.route('/customers/<int:customer_id>/edit', methods=['GET', 'POST'])
+@bp.route('/customers/<string:customer_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(customer_id):
     """Edit customer information"""
@@ -103,7 +103,7 @@ def edit(customer_id):
                          customer=customer,
                          title=f'Edit - {customer.name}')
 
-@bp.route('/customers/<int:customer_id>/delete', methods=['POST'])
+@bp.route('/customers/<string:customer_id>/delete', methods=['POST'])
 @login_required
 def delete(customer_id):
     """Delete customer"""
