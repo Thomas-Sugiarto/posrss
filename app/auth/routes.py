@@ -22,15 +22,21 @@ def login():
     
     form = LoginForm()
     if form.validate_on_submit():
-        # PERBAIKAN: Cari user berdasarkan EMAIL, bukan username
+        # Cari user berdasarkan EMAIL
         user = User.query.filter_by(email=form.email.data).first()
         
         if user is None or not user.check_password(form.password.data):
             flash('Invalid email or password', 'danger')
             return redirect(url_for('auth.login'))
         
-        if not user.is_active:
-            flash('Account is deactivated', 'warning')
+        # PERBAIKAN: Cek status TENANT bukan user.is_active
+        if user.tenant and not user.tenant.is_active:
+            flash('Your business account has been deactivated. Please contact administrator.', 'warning')
+            return redirect(url_for('auth.login'))
+        
+        # PERBAIKAN: Tambahkan pengecekan jika user tidak memiliki tenant
+        if not user.tenant:
+            flash('Your account is not associated with any business. Please contact administrator.', 'warning')
             return redirect(url_for('auth.login'))
         
         login_user(user, remember=form.remember_me.data)
