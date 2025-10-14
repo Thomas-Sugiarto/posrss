@@ -146,15 +146,22 @@
                         </div>
                         <div class="col-md-4">
                             <div class="d-grid">
-                                <a href="{{ url_for('products.index') }}" class="btn btn-outline-success">
+                                <a href="{{ url_for('products.index') }}" class="btn btn-outline-primary">
                                     <i class="bi bi-box-seam"></i> Manage Products
                                 </a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="d-grid">
-                                <a href="{{ url_for('customers.index') }}" class="btn btn-outline-info">
+                                <a href="{{ url_for('customers.index') }}" class="btn btn-outline-primary">
                                     <i class="bi bi-people"></i> Manage Customers
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid">
+                                <a href="{{ url_for('customers.users') }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-person-workspace"></i> Manage Cashiers
                                 </a>
                             </div>
                         </div>
