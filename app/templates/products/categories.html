@@ -204,7 +204,8 @@
                                     
                                     <div class="product-count">
                                         <i class="bi bi-box"></i> 
-                                        {{ category.products|length }} product{% if category.products.count() != 1 %}s{% endif %}
+                                        {% set product_count = category.products.count() %}
+                                        {{ product_count }} product{% if product_count != 1 %}s{% endif %}
                                     </div>
                                     
                                     <!-- Progress bar showing category usage -->
