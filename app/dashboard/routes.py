@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, request
+from flask import redirect, render_template, jsonify, request, url_for
 from flask_login import login_required, current_user
 from app.dashboard import bp
 from app.models import Sale, Product, SaleItem, Customer, db
@@ -9,6 +9,8 @@ from sqlalchemy import func, extract
 @login_required
 def index():
     """Dashboard utama dengan statistik real-time"""
+    if current_user.role == 'cashier':
+        return redirect(url_for('sales.pos'))
     # Today's statistics
     today = datetime.now().date()
     today_start = datetime.combine(today, datetime.min.time())

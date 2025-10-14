@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, IntegerField, TextAreaField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Optional, Length, NumberRange, Email
+from wtforms import StringField, SelectField, IntegerField, TextAreaField, SubmitField, BooleanField, PasswordField
+from wtforms.validators import DataRequired, Optional, Length, NumberRange, Email, EqualTo, ValidationError
+from app.models import User
 
 class TenantInfoForm(FlaskForm):
     name = StringField('Store Name', validators=[DataRequired(), Length(max=100)])
@@ -27,3 +28,37 @@ class HardwareSettingsForm(FlaskForm):
         ('bluetooth', 'Bluetooth')
     ], default='keyboard')
     submit = SubmitField('Save Hardware Settings')
+
+class UserForm(FlaskForm):
+    """
+    Form untuk membuat dan mengedit pengguna (kasir) oleh tenant admin.
+    """
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=64)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    # Pilihan peran, saat ini hanya 'cashier' yang bisa dibuat oleh tenant_admin.
+    role = SelectField('Role', choices=[('cashier', 'Cashier')], validators=[DataRequired()])
+    # Password bersifat opsional saat mengedit, tapi wajib saat membuat.
+    password = PasswordField('Password', validators=[
+        Optional(),
+        Length(min=6, message='Password must be at least 6 characters long.'),
+        EqualTo('confirm_password', message='Passwords must match.')
+    ])
+    confirm_password = PasswordField('Confirm Password')
+    submit = SubmitField('Save User')
+
+    def __init__(self, original_email=None, *args, **kwargs):
+        """
+        Constructor kustom untuk menangani validasi email unik saat edit.
+        """
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.original_email = original_email
+
+    def validate_email(self, email):
+        """
+        Memastikan email yang dimasukkan belum digunakan oleh pengguna lain.
+        """
+        # Hanya validasi jika email diubah.
+        if email.data != self.original_email:
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('That email is already in use. Please choose a different one.')

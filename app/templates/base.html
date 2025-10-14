@@ -28,38 +28,68 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- ========================================================== -->
+                <!-- == PERUBAHAN UTAMA: Logika Menu Berdasarkan Peran Pengguna == -->
+                <!-- ========================================================== -->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard.index') }}">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('sales.pos') }}">
-                            <i class="bi bi-cash-coin"></i> POS
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('products.index') }}">
-                            <i class="bi bi-box-seam"></i> Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('customers.index') }}">
-                            <i class="bi bi-people"></i> Customers
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('reports.index') }}">
-                            <i class="bi bi-graph-up"></i> Reports
-                        </a>
-                    </li>
-                    {% if current_user.is_manager() %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('settings.index') }}">
-                            <i class="bi bi-gear"></i> Settings
-                        </a>
-                    </li>
+                    {% if current_user.is_superadmin %}
+                        <!-- Menu Superadmin -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('superadmin.dashboard') }}">
+                                <i class="bi bi-person-workspace"></i> Tenant Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('marketplace.manage') }}">
+                                <i class="bi bi-shop"></i> Manage Marketplace
+                            </a>
+                        </li>
+
+                    {% elif current_user.role == 'tenant_admin' %}
+                        <!-- Menu Tenant Admin -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard.index') }}">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('sales.pos') }}">
+                                <i class="bi bi-cash-coin"></i> POS
+                            </a>
+                        </li>
+                         <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('marketplace.index') }}">
+                                <i class="bi bi-cart3"></i> Marketplace
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('products.index') }}">
+                                <i class="bi bi-box-seam"></i> Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('customers.index') }}">
+                                <i class="bi bi-people"></i> Customers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('reports.index') }}">
+                                <i class="bi bi-graph-up"></i> Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('settings.index') }}">
+                                <i class="bi bi-gear"></i> Settings
+                            </a>
+                        </li>
+                    
+                    {% elif current_user.role == 'cashier' %}
+                        <!-- Menu Kasir (Hanya POS) -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('sales.pos') }}">
+                                <i class="bi bi-cash-coin"></i> POS
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
                 
@@ -68,9 +98,11 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle"></i> {{ current_user.username }}
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if not current_user.is_superadmin %}
                             <li><span class="dropdown-item-text">Store: {{ current_user.tenant.name }}</span></li>
-                            <li><span class="dropdown-item-text">Role: {{ current_user.role }}</span></li>
+                            {% endif %}
+                            <li><span class="dropdown-item-text">Role: {{ current_user.role|replace('_', ' ')|title }}</span></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
                                 <i class="bi bi-box-arrow-right"></i> Logout
@@ -109,3 +141,4 @@
     {% block scripts %}{% endblock %}
 </body>
 </html>
+

@@ -72,6 +72,12 @@ def create_app(config_name=None):
     
     from app.settings import bp as settings_bp
     app.register_blueprint(settings_bp, url_prefix='/settings')
+
+    from .superadmin import bp as superadmin_bp
+    app.register_blueprint(superadmin_bp, url_prefix='/superadmin')
+
+    from .marketplace import bp as marketplace_bp
+    app.register_blueprint(marketplace_bp, url_prefix='/marketplace')
     
     # Main index route
     @app.route('/')

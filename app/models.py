@@ -33,6 +33,20 @@ class Tenant(db.Model):
     customers = db.relationship('Customer', backref='tenant', lazy='dynamic', cascade='all, delete-orphan')
     categories = db.relationship('Category', backref='tenant', lazy='dynamic', cascade='all, delete-orphan')
 
+class MarketplaceItem(db.Model):
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    description = db.Column(db.Text, nullable=True)
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    stock = db.Column(db.Integer, nullable=False, default=0)
+    sku = db.Column(db.String(50), nullable=True, unique=True)
+    image_url = db.Column(db.String(255), nullable=True) # URL gambar dari S3
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<MarketplaceItem {self.name}>'
+    
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     

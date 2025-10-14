@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2"><i class="bi bi-shop"></i> Marketplace</h1>
+        <small class="text-muted">Restock items supplied by the provider</small>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for item in items %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ item.image_url or url_for('static', filename='images/placeholder.png') }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text text-muted small">{{ item.description or 'No description available.' }}</p>
+                    <div class="mt-auto">
+                        <p class="card-text mb-2"><strong>Price: ${{ "%.2f"|format(item.price) }}</strong></p>
+                        <p class="card-text"><small class="text-success">{{ item.stock }} in stock</small></p>
+                        <form action="{{ url_for('marketplace.restock_item', item_id=item.id) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="quantity" value="1" min="1" max="{{ item.stock }}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-cart-plus"></i> Restock
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <p class="text-center">No items are currently available in the marketplace.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

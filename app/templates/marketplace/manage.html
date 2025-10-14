@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2"><i class="bi bi-pencil-square"></i> Manage Marketplace Items</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ url_for('marketplace.create_item') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add New Item
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Image</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>SKU</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>
+                                <img src="{{ item.image_url or url_for('static', filename='images/placeholder.png') }}" alt="{{ item.name }}" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                            </td>
+                            <td>{{ item.name }}</td>
+                            <td>${{ "%.2f"|format(item.price) }}</td>
+                            <td>{{ item.stock }}</td>
+                            <td>{{ item.sku or 'N/A' }}</td>
+                            <td class="text-center">
+                                <a href="{{ url_for('marketplace.edit_item', item_id=item.id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form action="{{ url_for('marketplace.delete_item', item_id=item.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No marketplace items found. <a href="{{ url_for('marketplace.create_item') }}">Add one now</a>.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
