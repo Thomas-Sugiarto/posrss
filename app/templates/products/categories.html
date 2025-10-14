@@ -69,6 +69,29 @@
         </div>
     </div>
 
+    <!-- Precompute statistics -->
+    {% set active_products_count = 0 %}
+    {% set used_categories_count = 0 %}
+    {% set empty_categories_count = 0 %}
+    {% set total_products_count = 0 %}
+    
+    {% for category in categories %}
+        {% set category_product_count = category.products.count() %}
+        {% set total_products_count = total_products_count + category_product_count %}
+        
+        {% if category_product_count > 0 %}
+            {% set used_categories_count = used_categories_count + 1 %}
+        {% else %}
+            {% set empty_categories_count = empty_categories_count + 1 %}
+        {% endif %}
+        
+        {% for product in category.products %}
+            {% if product.is_active %}
+                {% set active_products_count = active_products_count + 1 %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
     <!-- Statistics -->
     <div class="row mb-4">
         <div class="col-md-3">
@@ -92,17 +115,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h6 class="card-title text-muted mb-0">Active Products</h6>
-                            <h3 class="mb-0">
-                                {% set active_products = namespace(count=0) %}
-                                {% for category in categories %}
-                                    {% for product in category.products %}
-                                        {% if product.is_active %}
-                                            {% set active_products.count = active_products.count + 1 %}
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endfor %}
-                                {{ active_products.count }}
-                            </h3>
+                            <h3 class="mb-0">{{ active_products_count }}</h3>
                         </div>
                         <div class="align-self-center">
                             <i class="bi bi-check-circle text-success fs-2"></i>
@@ -117,15 +130,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h6 class="card-title text-muted mb-0">Categories with Products</h6>
-                            <h3 class="mb-0">
-                                {% set used_categories = namespace(count=0) %}
-                                {% for category in categories %}
-                                    {% if category.products.count() > 0 %}
-                                        {% set used_categories.count = used_categories.count + 1 %}
-                                    {% endif %}
-                                {% endfor %}
-                                {{ used_categories.count }}
-                            </h3>
+                            <h3 class="mb-0">{{ used_categories_count }}</h3>
                         </div>
                         <div class="align-self-center">
                             <i class="bi bi-folder-check text-warning fs-2"></i>
@@ -140,15 +145,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h6 class="card-title text-muted mb-0">Empty Categories</h6>
-                            <h3 class="mb-0">
-                                {% set empty_categories = namespace(count=0) %}
-                                {% for category in categories %}
-                                    {% if category.products.count() == 0 %}
-                                        {% set empty_categories.count = empty_categories.count + 1 %}
-                                    {% endif %}
-                                {% endfor %}
-                                {{ empty_categories.count }}
-                            </h3>
+                            <h3 class="mb-0">{{ empty_categories_count }}</h3>
                         </div>
                         <div class="align-self-center">
                             <i class="bi bi-folder-x text-purple fs-2"></i>
@@ -209,20 +206,15 @@
                                     </div>
                                     
                                     <!-- Progress bar showing category usage -->
-                                    {% set total_products = namespace(count=0) %}
-                                    {% for cat in categories %}
-                                        {% set total_products = total_products + cat.products.count() %}
-                                    {% endfor %}
-                                    
-                                    {% if total_products.count() > 0 %}
+                                    {% if total_products_count > 0 %}
                                     <div class="mt-2">
                                         <div class="d-flex justify-content-between small text-muted mb-1">
                                             <span>Usage</span>
-                                            <span>{{ "%.1f"|format((category.products|length / total_products.count * 100)) }}%</span>
+                                            <span>{{ "%.1f"|format((product_count / total_products_count * 100)) }}%</span>
                                         </div>
                                         <div class="progress" style="height: 4px;">
                                             <div class="progress-bar" role="progressbar" 
-                                                 style="width: {{ (category.products|length / total_products.count * 100) }}%">
+                                                 style="width: {{ (product_count / total_products_count * 100) }}%">
                                             </div>
                                         </div>
                                     </div>
@@ -332,30 +324,31 @@
 
 {% block scripts %}
 <script>
-const urls = document.getElementById('urls').dataset;
-const updateBaseUrl = urls.updateUrl;
-const deleteBaseUrl = urls.deleteUrl;
+// Store URLs in a data attribute in the HTML body
+document.body.dataset.updateUrl = "{{ url_for('products.update_category', category_id=0) }}";
+document.body.dataset.deleteUrl = "{{ url_for('products.delete_category', category_id=0) }}";
 
 function editCategory(categoryId, categoryName, categoryDescription) {
     document.getElementById('editCategoryId').value = categoryId;
     document.getElementById('editCategoryName').value = categoryName;
-    document.getElementById('editCategoryDescription').value = categoryDescription;
+    document.getElementById('editCategoryDescription').value = categoryDescription || '';
     
     // Set form action using base URL
-    document.getElementById('editCategoryForm').action = updateBaseUrl.replace('/0', '/' + categoryId);
+    const updateUrl = document.body.dataset.updateUrl.replace('/0', '/' + categoryId);
+    document.getElementById('editCategoryForm').action = updateUrl;
     
     new bootstrap.Modal(document.getElementById('editCategoryModal')).show();
 }
 
-// Delete category function
-function deleteCategory(categoryId) {
-    if (confirm('Are you sure you want to delete this category?')) {
-        const deleteUrl = deleteBaseUrl.replace('/0', '/' + categoryId);
+function deleteCategory(categoryId, categoryName) {
+    if (confirm('Are you sure you want to delete the category "' + categoryName + '"?')) {
+        const deleteUrl = document.body.dataset.deleteUrl.replace('/0', '/' + categoryId);
         
         fetch(deleteUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name="csrf_token"]')?.value || ''
             },
         })
         .then(response => {
@@ -372,38 +365,21 @@ function deleteCategory(categoryId) {
     }
 }
 
-// Show alert function
-function showAlert(message, type) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    document.querySelector('main').insertBefore(alertDiv, document.querySelector('main').firstChild);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
-        }
-    }, 5000);
-}
-
 // Auto-focus on category name field when modal opens
 document.addEventListener('DOMContentLoaded', function() {
     const addModal = document.getElementById('addCategoryModal');
     if (addModal) {
         addModal.addEventListener('shown.bs.modal', function () {
-            document.getElementById('name').focus();
+            const nameField = document.getElementById('name');
+            if (nameField) nameField.focus();
         });
     }
     
     const editModal = document.getElementById('editCategoryModal');
     if (editModal) {
         editModal.addEventListener('shown.bs.modal', function () {
-            document.getElementById('editCategoryName').focus();
+            const editNameField = document.getElementById('editCategoryName');
+            if (editNameField) editNameField.focus();
         });
     }
 });
