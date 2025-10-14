@@ -88,7 +88,7 @@
                                 <span class="badge bg-warning">{{ customer.loyalty_points }} points</span>
                             </td>
                             <td>
-                                {% set customer_sales = {{ customer.sales_count }} %}
+                                {% set customer_sales = customer.sales_count %}
                                 <span class="badge bg-info">{{ customer_sales }} purchases</span>
                             </td>
                             <td>
