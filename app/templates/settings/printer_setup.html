@@ -38,17 +38,52 @@
                     <strong>Connect your Printer:</strong> Ensure your thermal receipt printer is properly connected to your computer (via USB, Bluetooth, etc.) and is installed correctly in your operating system.
                 </li>
                 <li>
-                    <strong>Start Printing:</strong> When you complete a sale, the system will automatically try to find a suitable receipt printer and send the print job. You may see a confirmation popup from QZ Tray the first time you print.
+                    <strong>Test Your Connection:</strong> Click the button below to send a test page to your printer. If it prints, you're all set!
                 </li>
             </ol>
             <div class="alert alert-info">
                 <i class="bi bi-info-circle"></i> 
                 <strong>No Server-Side Configuration Needed:</strong> With this method, you no longer need to configure printer IP addresses in the settings. Printer selection is handled locally on each machine.
             </div>
-             <a href="{{ url_for('settings.index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Settings
-            </a>
         </div>
-    </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-primary" id="testPrintBtn">
+                <i class="bi bi-printer-fill"></i> Send Test Print
+            </button>
+            <div id="testPrintStatus" class="mt-3" style="min-height: 2rem;"></div>
+        </div>
+        </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/qz_printer.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const testPrintBtn = document.getElementById('testPrintBtn');
+    const statusDiv = document.getElementById('testPrintStatus');
+
+    testPrintBtn.addEventListener('click', function() {
+        // Nonaktifkan tombol untuk mencegah klik ganda
+        testPrintBtn.disabled = true;
+        testPrintBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Printing...';
+        
+        statusDiv.innerHTML = '<div class="alert alert-secondary">Connecting to QZ Tray and sending test print...</div>';
+
+        printTestPageWithQZ().then(result => {
+            if (result.success) {
+                statusDiv.innerHTML = `<div class="alert alert-success"><i class="bi bi-check-circle"></i> ${result.message}</div>`;
+            } else {
+                statusDiv.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> Test print failed: ${result.message}</div>`;
+            }
+        }).catch(err => {
+             statusDiv.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> An error occurred: ${err.toString()}</div>`;
+        }).finally(() => {
+            // Aktifkan kembali tombol setelah selesai
+            testPrintBtn.disabled = false;
+            testPrintBtn.innerHTML = '<i class="bi bi-printer-fill"></i> Send Test Print';
+        });
+    });
+});
+</script>
 {% endblock %}

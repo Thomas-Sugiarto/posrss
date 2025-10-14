@@ -102,6 +102,34 @@ function formatReceiptForQZ(receiptData) {
     return data;
 }
 
+async function printTestPageWithQZ() {
+    console.log("Starting test print...");
+    // 1. Buat data struk palsu untuk tes
+    const testData = {
+        company_name: 'T-POS Enterprise',
+        store_address: 'Test Print Successful!',
+        store_phone: new Date().toLocaleString(),
+        receipt_number: 'TEST-001',
+        date: '',
+        cashier: 'System',
+        items: [
+            { name: 'Test Item 1', quantity: 1, price: 10.00, total: 10.00 },
+            { name: 'Test Item 2', quantity: 2, price: 5.00, total: 10.00 }
+        ],
+        subtotal: 20.00,
+        tax: 2.00,
+        discount: 0.00,
+        grand_total: 22.00,
+        payment_method: 'CASH',
+        amount_paid: 30.00,
+        change: 8.00
+    };
+
+    // 2. Panggil fungsi cetak yang sudah ada
+    // Kita menggunakan kembali logika yang sama untuk mencetak struk asli
+    return await printReceiptWithQZ(testData);
+}
+
 
 async function printReceiptWithQZ(receiptData) {
     try {
