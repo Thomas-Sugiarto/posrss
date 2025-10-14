@@ -69,9 +69,9 @@ def api_products():
 @csrf.exempt
 def process_sale():
     try:
-        # Debug: print raw request data
-        print("Raw request data:", request.data)
-        print("Content-Type:", request.content_type)
+        data = request.get_json()
+        if not data or 'items' not in data or not data['items']:
+            return jsonify({'success': False, 'error': 'No items in cart'}), 400
         
         data = request.get_json()
         print("Parsed JSON data:", data)
@@ -145,60 +145,42 @@ def process_sale():
         
         db.session.commit()
         
-        # Print receipt jika printer tersedia
-        print_success = True
-        printer_message = ""
-        try:
-            printer_service = PrinterService()
-            
-            # Format data terlebih dahulu, lalu panggil dengan 1 parameter
-            receipt_data = {
-                'company_name': current_user.tenant.name if current_user.tenant else 'T-POS ENTERPRISE',
-                'store_name': getattr(current_user.tenant, 'store_name', 'Main Store'),
-                'store_address': getattr(current_user.tenant, 'address', ''),
-                'store_phone': getattr(current_user.tenant, 'phone', ''),
-                'receipt_number': sale.receipt_number,
-                'date': sale.created_at.strftime('%Y-%m-%d %H:%M'),
-                'cashier': current_user.username,
-                'items': [],
-                'grand_total': float(sale.total_amount),
-                'payment_method': sale.payment_method,
-                'amount_paid': float(data.get('amount_paid', sale.total_amount)),
-                'change': float(data.get('change_amount', 0))
-            }
-            
-            # Add items to receipt data
-            for item in sale.items:
-                receipt_data['items'].append({
+       # PERUBAHAN: Siapkan data struk untuk dikirim ke frontend
+        receipt_data = {
+            'company_name': current_user.tenant.name if current_user.tenant else 'T-POS ENTERPRISE',
+            'store_name': getattr(current_user.tenant, 'store_name', 'Main Store'),
+            'store_address': getattr(current_user.tenant, 'address', ''),
+            'store_phone': getattr(current_user.tenant, 'phone', ''),
+            'receipt_number': sale.receipt_number,
+            'date': sale.created_at.strftime('%Y-%m-%d %H:%M'),
+            'cashier': current_user.username,
+            'items': [
+                {
                     'name': item.product.name,
                     'quantity': item.quantity,
                     'price': float(item.unit_price),
                     'total': float(item.total_price)
-                })
-            
-            # PANGGIL DENGAN 1 PARAMETER SAJA
-            print_success = printer_service.print_receipt(receipt_data)
-            
-            if print_success:
-                printer_message = "Receipt printed successfully"
-            else:
-                printer_message = "Print failed - printer not available"
-                
-        except Exception as e:
-            print_success = False
-            printer_message = f"Print error: {str(e)}"
-        
+                } for item in sale.items
+            ],
+            'subtotal': float(sale.total_amount - sale.tax_amount + sale.discount_amount),
+            'tax': float(sale.tax_amount),
+            'discount': float(sale.discount_amount),
+            'grand_total': float(sale.total_amount),
+            'payment_method': sale.payment_method.upper(),
+            'amount_paid': float(data.get('amount_paid', sale.total_amount)),
+            'change': float(data.get('change_amount', 0))
+        }
+
         return jsonify({
             'success': True,
             'sale_id': sale.id,
             'receipt_number': sale.receipt_number,
-            'print_status': print_success,
-            'print_message': printer_message
+            'receipt_data': receipt_data  # Kirim data ini ke frontend
         })
-    
+
     except Exception as e:
         db.session.rollback()
-        print("Error in process_sale:", str(e))
+        print(f"Error in process_sale: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @bp.route('/history')

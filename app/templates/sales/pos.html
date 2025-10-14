@@ -316,6 +316,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/qz_printer.js') }}"></script>
 <script>
     let cart = [];
     let selectedPaymentMethod = 'cash';
@@ -763,31 +764,26 @@ document.getElementById('amountPaid').addEventListener('change', updateCashForm)
             // Show success modal
             document.getElementById('receiptNumber').textContent = data.receipt_number;
             document.getElementById('receiptTotal').textContent = '$' + saleData.total_amount.toFixed(2);
-            
-            // Show change amount on receipt if cash payment
-            if (selectedPaymentMethod === 'cash') {
-                document.getElementById('receiptTotal').innerHTML += 
-                    `<br><small>Paid: $${saleData.amount_paid.toFixed(2)}</small>` +
-                    `<br><small>Change: $${saleData.change_amount.toFixed(2)}</small>`;
-            }
-            
             document.getElementById('viewReceiptBtn').href = `/sales/receipt/${data.sale_id}`;
-            
-            // Update print status
-            const printStatus = document.getElementById('printStatus');
-            const printMessage = document.getElementById('printMessage');
-            if (data.print_status) {
-                printStatus.className = 'alert alert-success';
-                printMessage.innerHTML = '<i class="bi bi-check-circle"></i> ' + (data.print_message || 'Receipt printed successfully');
-            } else {
-                printStatus.className = 'alert alert-warning';
-                printMessage.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ' + (data.print_message || 'Receipt print failed');
-            }
-
             const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
             modal.show();
-
-            // Clear cart and reset form
+            if (data.receipt_data) {
+                    const printStatus = document.getElementById('printStatus');
+                    const printMessage = document.getElementById('printMessage');
+                    printMessage.textContent = 'Preparing to print...';
+                    
+                    printReceiptWithQZ(data.receipt_data).then(result => {
+                         if (result.success) {
+                            printStatus.className = 'alert alert-success';
+                            printMessage.innerHTML = `<i class="bi bi-check-circle"></i> ${result.message}`;
+                        } else {
+                            printStatus.className = 'alert alert-danger';
+                            printMessage.innerHTML = `<i class="bi bi-exclamation-triangle"></i> Print failed: ${result.message}`;
+                        }
+                    });
+                }
+                
+            // Reset cart dan form
             cart = [];
             updateCartDisplay();
             document.getElementById('customerSelect').value = '';
