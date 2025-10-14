@@ -120,7 +120,7 @@
                             <h3 class="mb-0">
                                 {% set used_categories = namespace(count=0) %}
                                 {% for category in categories %}
-                                    {% if category.products.count > 0 %}
+                                    {% if category.products.count() > 0 %}
                                         {% set used_categories.count = used_categories.count + 1 %}
                                     {% endif %}
                                 {% endfor %}
@@ -143,7 +143,7 @@
                             <h3 class="mb-0">
                                 {% set empty_categories = namespace(count=0) %}
                                 {% for category in categories %}
-                                    {% if category.products.count == 0 %}
+                                    {% if category.products.count() == 0 %}
                                         {% set empty_categories.count = empty_categories.count + 1 %}
                                     {% endif %}
                                 {% endfor %}
@@ -204,7 +204,7 @@
                                     
                                     <div class="product-count">
                                         <i class="bi bi-box"></i> 
-                                        {{ category.products|length }} product{% if category.products.count != 1 %}s{% endif %}
+                                        {{ category.products|length }} product{% if category.products.count() != 1 %}s{% endif %}
                                     </div>
                                     
                                     <!-- Progress bar showing category usage -->
