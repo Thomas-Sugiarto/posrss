@@ -210,7 +210,7 @@
                                     <!-- Progress bar showing category usage -->
                                     {% set total_products = namespace(count=0) %}
                                     {% for cat in categories %}
-                                        {% set total_products.count() = total_products.count() + cat.products.count() %}
+                                        {% set total_products = total_products + cat.products.count() %}
                                     {% endfor %}
                                     
                                     {% if total_products.count() > 0 %}
