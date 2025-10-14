@@ -80,9 +80,9 @@ def create_item():
                 sku=form.sku.data
             )
             
-            # Handle image upload - SAMA PERSIS seperti di products routes
+            # Handle image upload
             if form.image.data:
-                s3_service = S3Service()  # Inisialisasi di dalam function
+                s3_service = S3Service()
                 image_url = s3_service.upload_product_image(form.image.data, f"marketplace_{new_item.id}")
                 new_item.image_url = image_url
             
@@ -96,8 +96,11 @@ def create_item():
             db.session.rollback()
             current_app.logger.error(f"Error creating marketplace item: {str(e)}")
             flash(f'Error creating item: {str(e)}', 'danger')
-        
-    return render_template('marketplace/create_edit_item.html', form=form, title="Create Marketplace Item", legend="New Marketplace Item")
+    
+    return render_template('marketplace/create_edit_item.html', 
+                         form=form, 
+                         title="Create Marketplace Item", 
+                         legend="New Marketplace Item")
 
 @bp.route('/manage/edit/<string:item_id>', methods=['GET', 'POST'])
 @login_required
@@ -107,6 +110,9 @@ def edit_item(item_id):
     item = MarketplaceItem.query.get_or_404(item_id)
     form = MarketplaceItemForm(obj=item)
     
+    # Pass the object to template for displaying current image
+    form._obj = item
+    
     if form.validate_on_submit():
         try:
             item.name = form.name.data
@@ -115,15 +121,14 @@ def edit_item(item_id):
             item.stock = form.stock.data
             item.sku = form.sku.data
 
-            # Handle image upload - SAMA PERSIS seperti di products routes
+            # Handle image upload
             if form.image.data:
-                s3_service = S3Service()  # Inisialisasi di dalam function
+                s3_service = S3Service()
                 image_url = s3_service.upload_product_image(form.image.data, f"marketplace_{item.id}")
                 
                 # Hapus gambar lama jika ada
                 if item.image_url:
                     try:
-                        # Extract object name dari URL
                         old_image_url = item.image_url
                         if 'amazonaws.com/' in old_image_url:
                             object_name = old_image_url.split('amazonaws.com/')[1]
@@ -142,7 +147,10 @@ def edit_item(item_id):
             current_app.logger.error(f"Error updating marketplace item: {str(e)}")
             flash(f'Error updating item: {str(e)}', 'danger')
 
-    return render_template('marketplace/create_edit_item.html', form=form, title="Edit Marketplace Item", legend=f"Edit {item.name}")
+    return render_template('marketplace/create_edit_item.html', 
+                         form=form, 
+                         title="Edit Marketplace Item", 
+                         legend=f"Edit {item.name}")
 
 
 @bp.route('/manage/delete/<string:item_id>', methods=['POST'])
