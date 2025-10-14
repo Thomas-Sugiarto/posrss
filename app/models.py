@@ -150,6 +150,24 @@ class Customer(db.Model):
     
     # Relationships
     sales = db.relationship('Sale', backref='customer', lazy='dynamic')
+    
+    @property
+    def last_sale_date(self):
+        """Get the date of the last sale for this customer"""
+        last_sale = self.sales.order_by(Sale.created_at.desc()).first()
+        return last_sale.created_at if last_sale else None
+    
+    @property
+    def total_spent(self):
+        """Calculate total amount spent by customer"""
+        return db.session.query(db.func.sum(Sale.total_amount))\
+            .filter(Sale.customer_id == self.id)\
+            .scalar() or 0
+    
+    @property 
+    def sales_count(self):
+        """Get total number of sales"""
+        return self.sales.count()
 
 class Sale(db.Model):
     __tablename__ = 'sales'

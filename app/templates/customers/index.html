@@ -88,12 +88,12 @@
                                 <span class="badge bg-warning">{{ customer.loyalty_points }} points</span>
                             </td>
                             <td>
-                                {% set customer_sales = customer.sales.count() %}
+                                {% set customer_sales = {{ customer.sales_count }} %}
                                 <span class="badge bg-info">{{ customer_sales }} purchases</span>
                             </td>
                             <td>
-                                {% if customer.sales.first() %}
-                                {{ customer.sales.order_by(customer.sales.created_at.desc()).first().created_at.strftime('%Y-%m-%d') }}
+                                {% if customer.last_sale_date %}
+                                {{ customer.last_sale_date.strftime('%Y-%m-%d') }}
                                 {% else %}
                                 <span class="text-muted">Never</span>
                                 {% endif %}
