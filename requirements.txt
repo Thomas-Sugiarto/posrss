@@ -7,6 +7,7 @@ Flask-Migrate==4.0.5
 Flask-Limiter==3.6.0
 Flask-Caching==2.3.0
 openpyxl
+pytz
 # === DATABASE ===
 SQLAlchemy==2.0.23
 Werkzeug==2.3.7
