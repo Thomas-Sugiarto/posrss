@@ -106,7 +106,7 @@ async function printTestPageWithQZ() {
     console.log("Starting test print...");
     // 1. Buat data struk palsu untuk tes
     const testData = {
-        company_name: 'T-POS Enterprise',
+        company_name: 'KreasiPOS Enterprise',
         store_address: 'Test Print Successful!',
         store_phone: new Date().toLocaleString(),
         receipt_number: 'TEST-001',
