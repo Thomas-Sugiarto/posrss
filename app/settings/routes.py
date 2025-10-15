@@ -15,7 +15,7 @@ def tenant_admin_required(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or current_user.role != 'tenant_admin':
+        if not current_user.is_authenticated or current_user.role != 'admin':
             abort(403) # Tampilkan halaman Forbidden jika bukan admin
         return f(*args, **kwargs)
     return decorated_function
