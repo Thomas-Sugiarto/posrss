@@ -3,36 +3,123 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2"><i class="bi bi-shop"></i> Marketplace</h1>
-        <small class="text-muted">Restock items supplied by the provider</small>
+        <div>
+            <a class="nav-link" href="{{ url_for('marketplace.my_address') }}">
+                <i class="bi bi-geo-alt"></i> My Address
+            </a>
+            <a href="{{ url_for('marketplace.restock_orders') }}" class="btn btn-outline-success me-2">
+                <i class="bi bi-list-check"></i> My Orders
+            </a>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#paymentMethodsModal">
+                <i class="bi bi-credit-card"></i> Payment Methods
+            </button>
+        </div>
+    </div>
+
+    <!-- Payment Methods Modal -->
+    <div class="modal fade" id="paymentMethodsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Payment Methods</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    {% if payment_methods %}
+                    <div class="row">
+                        {% for method in payment_methods %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ method.name }}</h6>
+                                    <div class="mb-2">
+                                        <strong>Account Number:</strong><br>
+                                        {{ method.account_number }}
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Account Name:</strong><br>
+                                        {{ method.account_name }}
+                                    </div>
+                                    {% if method.qr_code_url %}
+                                    <div class="text-center mt-3">
+                                        <img src="{{ method.qr_code_url }}" alt="QR Code" class="img-fluid" style="max-width: 200px;">
+                                        <p class="small text-muted mt-2">Scan QR Code to pay</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-credit-card-2-front display-1 text-muted"></i>
+                        <p class="mt-3">No payment methods available yet.</p>
+                        <p class="text-muted">Please contact administrator for payment information.</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods Quick Info -->
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+        <div>
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Payment Information:</strong> Please transfer to the provided accounts and upload payment proof during restock.
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#paymentMethodsModal">
+            View Payment Details
+        </button>
     </div>
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for item in items %}
         <div class="col">
             <div class="card h-100">
-                <img src="{{ item.image_url or url_for('static', filename='images/placeholder.png') }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                {% if item.image_url %}
+                <img src="{{ item.image_url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                </div>
+                {% endif %}
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ item.name }}</h5>
-                    <p class="card-text text-muted small">{{ item.description or 'No description available.' }}</p>
+                    <p class="card-text text-muted small">{{ item.description[:100] }}{% if item.description|length > 100 %}...{% endif %}</p>
+                    
                     <div class="mt-auto">
-                        <p class="card-text mb-2"><strong>Price: ${{ "%.2f"|format(item.price) }}</strong></p>
-                        <p class="card-text"><small class="text-success">{{ item.stock }} in stock</small></p>
-                        <form action="{{ url_for('marketplace.restock_item', item_id=item.id) }}" method="POST">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <div class="input-group">
-                                <input type="number" class="form-control" name="quantity" value="1" min="1" max="{{ item.stock }}">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-cart-plus"></i> Restock
-                                </button>
-                            </div>
-                        </form>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold text-primary">{{ "Rp {:,.0f}".format(item.price) }}</span>
+                            <span class="badge {% if item.stock > 10 %}bg-success{% elif item.stock > 0 %}bg-warning{% else %}bg-danger{% endif %}">
+                                Stock: {{ item.stock }}
+                            </span>
+                        </div>
+                        
+                        {% if item.stock > 0 %}
+                        <a href="{{ url_for('marketplace.restock_item', item_id=item.id) }}" class="btn btn-primary w-100">
+                            <i class="bi bi-cart-plus"></i> Restock
+                        </a>
+                        {% else %}
+                        <button class="btn btn-secondary w-100" disabled>
+                            <i class="bi bi-x-circle"></i> Out of Stock
+                        </button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
         {% else %}
         <div class="col-12">
-            <p class="text-center">No items are currently available in the marketplace.</p>
+            <div class="text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <h4 class="mt-3 text-muted">No items available</h4>
+                <p class="text-muted">There are currently no items in the marketplace.</p>
+            </div>
         </div>
         {% endfor %}
     </div>

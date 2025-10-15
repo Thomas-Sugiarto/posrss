@@ -3,6 +3,7 @@ from datetime import timedelta
 import redis
 from dotenv import load_dotenv
 load_dotenv()
+
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
     
@@ -50,6 +51,9 @@ class Config:
     APP_NAME = os.environ.get('APP_NAME', 'T-POS Enterprise')
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'static/uploads')
     MAX_CONTENT_LENGTH = int(os.environ.get('MAX_CONTENT_LENGTH') or 16 * 1024 * 1024)
+    
+    # Timezone Configuration
+    TIMEZONE = os.environ.get('TIMEZONE', 'Asia/Jakarta')  # Default timezone Indonesia
     
     # Security
     WTF_CSRF_ENABLED = False

@@ -45,9 +45,19 @@ def register_error_handlers(app):
     def internal_server_error(error):
         return render_template('errors/500.html', error=error, debug=app.debug), 500
     
-    # Generic error handler for any unhandled exceptions
+    # Handle InvalidRequestError specifically
     @app.errorhandler(Exception)
-    def handle_exception(error):
+    def handle_invalid_request_error(error):
+        """Handle InvalidRequestError and other exceptions"""
+        # Check if it's an InvalidRequestError (from OpenAI or similar APIs)
+        if error.__class__.__name__ == 'InvalidRequestError':
+            app.logger.error(f"InvalidRequestError: {str(error)}")
+            return jsonify({
+                'success': False,
+                'error': 'Invalid request to external service',
+                'message': 'There was an issue with the external service request. Please try again.'
+            }), 400
+        
         # Pass through HTTP errors
         if hasattr(error, 'code'):
             return error
@@ -70,15 +80,27 @@ def create_app(config_name=None):
     limiter.init_app(app)
     csrf.init_app(app)
     
-    # Redis configuration
-    app.redis = redis.from_url(app.config['REDIS_URL'])
+    # Redis configuration with error handling
+    try:
+        app.redis = redis.from_url(app.config['REDIS_URL'])
+        # Test Redis connection
+        app.redis.ping()
+    except Exception as e:
+        app.logger.warning(f"Redis connection failed: {str(e)}. Using fallback configuration.")
+        app.redis = None
     
     # Cache configuration
-    cache.init_app(app, config={
-        'CACHE_TYPE': 'redis',
-        'CACHE_REDIS_URL': app.config['REDIS_URL'],
-        'CACHE_DEFAULT_TIMEOUT': 300
-    })
+    if app.redis:
+        cache.init_app(app, config={
+            'CACHE_TYPE': 'redis',
+            'CACHE_REDIS_URL': app.config['REDIS_URL'],
+            'CACHE_DEFAULT_TIMEOUT': 300
+        })
+    else:
+        cache.init_app(app, config={
+            'CACHE_TYPE': 'simple',
+            'CACHE_DEFAULT_TIMEOUT': 300
+        })
     
     # Login configuration
     login_manager.login_view = 'auth.login'
@@ -119,10 +141,26 @@ def create_app(config_name=None):
 
     register_error_handlers(app)
     
+    # Register timezone template filters
+    from app.utils.timezone import format_local_datetime, format_local_date, format_local_time
+    
+    @app.template_filter('local_datetime')
+    def local_datetime_filter(utc_dt, format_str='%Y-%m-%d %H:%M:%S'):
+        return format_local_datetime(utc_dt, format_str)
+    
+    @app.template_filter('local_date')
+    def local_date_filter(utc_dt, format_str='%Y-%m-%d'):
+        return format_local_date(utc_dt, format_str)
+    
+    @app.template_filter('local_time')
+    def local_time_filter(utc_dt, format_str='%H:%M'):
+        return format_local_time(utc_dt, format_str)
+    
     # Main index route
     @app.route('/')
     def index():
         return redirect(url_for('dashboard.index'))
+        
     @app.route('/favicon.ico')
     def favicon():
         from flask import send_from_directory
@@ -133,26 +171,12 @@ def create_app(config_name=None):
     # Health check route for deployment
     @app.route('/health')
     def health():
-        return jsonify({'status': 'healthy', 'timestamp': datetime.utcnow().isoformat()})
+        from app.utils.timezone import now_local
+        return jsonify({'status': 'healthy', 'timestamp': now_local().isoformat()})
     
     @app.context_processor
     def inject_debug():
         """Inject debug status into all templates"""
         return dict(debug=app.debug)
-
-# Handle template rendering errors specifically
-    @app.errorhandler(500)
-    def internal_server_error(error):
-        # Log the error with more context
-        app.logger.error(f"""
-        Internal Server Error:
-        Path: {request.path}
-        Method: {request.method}
-        User: {getattr(current_user, 'username', 'Anonymous')}
-        IP: {request.remote_addr}
-        Error: {str(error)}
-        """)
-        
-        return render_template('errors/500.html', error=error, debug=app.debug), 500
     
     return app

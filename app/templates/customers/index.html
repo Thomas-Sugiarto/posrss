@@ -93,7 +93,7 @@
                             </td>
                             <td>
                                 {% if customer.last_sale_date %}
-                                {{ customer.last_sale_date.strftime('%Y-%m-%d') }}
+                                {{ customer.last_sale_date|local_date }}
                                 {% else %}
                                 <span class="text-muted">Never</span>
                                 {% endif %}

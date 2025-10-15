@@ -57,7 +57,7 @@
                 <h1 class="h2 mb-1">{{ customer.name }}</h1>
                 <p class="mb-0 opacity-75">
                     Customer ID: {{ customer.id }} • 
-                    Created: {{ customer.created_at.strftime('%d %b %Y') }}
+                    Created: {{ customer.created_at|local_date('%d %b %Y') }}
                 </p>
             </div>
             <div class="col-auto">

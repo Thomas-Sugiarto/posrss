@@ -264,7 +264,7 @@
                                         <span class="text-capitalize">{{ sale.payment_method }}</span>
                                     </p>
                                     <small class="text-muted">
-                                        {{ sale.created_at.strftime('%H:%M') }} • 
+                                        {{ sale.created_at|local_time }} • 
                                         {{ sale.user.username }}
                                     </small>
                                 </div>

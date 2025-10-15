@@ -4,9 +4,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import uuid
 import json
+from enum import Enum
 
 def generate_uuid():
     return str(uuid.uuid4())
+
+def utc_now():
+    """Always store in UTC, display will be converted by timezone utils"""
+    return datetime.utcnow()
 
 class Tenant(db.Model):
     __tablename__ = 'tenants'
@@ -16,10 +21,13 @@ class Tenant(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone = db.Column(db.String(20))
     address = db.Column(db.Text)
+    city = db.Column(db.String(100))
+    postal_code = db.Column(db.String(20))
     subdomain = db.Column(db.String(50), unique=True)
     is_active = db.Column(db.Boolean, default=True)
     is_default = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utc_now)
+    updated_at = db.Column(db.DateTime, default=utc_now, onupdate=utc_now)
     
     # Hardware settings
     printer_type = db.Column(db.String(20), default='thermal')
@@ -34,18 +42,67 @@ class Tenant(db.Model):
     categories = db.relationship('Category', backref='tenant', lazy='dynamic', cascade='all, delete-orphan')
 
 class MarketplaceItem(db.Model):
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = db.Column(db.String(100), nullable=False, unique=True)
-    description = db.Column(db.Text, nullable=True)
-    price = db.Column(db.Numeric(10, 2), nullable=False)
-    stock = db.Column(db.Integer, nullable=False, default=0)
-    sku = db.Column(db.String(50), nullable=True, unique=True)
-    image_url = db.Column(db.String(255), nullable=True) # URL gambar dari S3
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    __tablename__ = 'marketplace_item'
 
-    def __repr__(self):
-        return f'<MarketplaceItem {self.name}>'
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    price = db.Column(db.Float, nullable=False)
+    stock = db.Column(db.Integer, nullable=False, default=0)
+    sku = db.Column(db.String(50), unique=True)
+    image_url = db.Column(db.String(500))
+    created_at = db.Column(db.DateTime, default=utc_now)
+    updated_at = db.Column(db.DateTime, default=utc_now, onupdate=utc_now)
+
+    # Relationship dengan restock orders - FIXED: removed backref to avoid conflict
+    restock_orders = db.relationship('RestockOrder', back_populates='marketplace_item', lazy=True)
+    
+class RestockStatus(Enum):
+    PENDING = 'pending'
+    VERIFIED = 'verified'
+    REJECTED = 'rejected'
+
+class RestockOrder(db.Model):
+    __tablename__ = 'restock_orders'
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    tenant_id = db.Column(db.String(36), db.ForeignKey('tenants.id'), nullable=False)
+    marketplace_item_id = db.Column(db.String(36), db.ForeignKey('marketplace_item.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    total_amount = db.Column(db.Float, nullable=False)
+    
+    # Alamat pengiriman untuk order ini (bisa berbeda dari alamat default tenant)
+    shipping_address = db.Column(db.Text)
+    shipping_city = db.Column(db.String(100))
+    shipping_postal_code = db.Column(db.String(20))
+    shipping_phone = db.Column(db.String(20))
+    
+    payment_proof_url = db.Column(db.String(500))
+    status = db.Column(db.Enum(RestockStatus), default=RestockStatus.PENDING)
+    notes = db.Column(db.Text)  # Notes dari tenant
+    admin_notes = db.Column(db.Text)  # Notes dari admin
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=utc_now)
+    updated_at = db.Column(db.DateTime, default=utc_now, onupdate=utc_now)
+    verified_at = db.Column(db.DateTime)
+    verified_by = db.Column(db.String(36), db.ForeignKey('users.id'))
+    
+    # Relationships - FIXED: use back_populates instead of backref
+    tenant = db.relationship('Tenant', backref='restock_orders')
+    marketplace_item = db.relationship('MarketplaceItem', back_populates='restock_orders')
+    verifier = db.relationship('User')
+
+class PaymentMethod(db.Model):
+    __tablename__ = 'payment_methods'
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(100), nullable=False)
+    account_number = db.Column(db.String(100))
+    account_name = db.Column(db.String(100))
+    qr_code_url = db.Column(db.String(500))
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=utc_now)
     
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -60,7 +117,7 @@ class User(UserMixin, db.Model):
     phone = db.Column(db.String(20))
     is_active = db.Column(db.Boolean, default=True)
     is_superadmin = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utc_now)
     last_login = db.Column(db.DateTime)
     
     # Foreign keys
@@ -90,7 +147,7 @@ class Category(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utc_now)
     
     # Foreign keys
     tenant_id = db.Column(db.String(36), db.ForeignKey('tenants.id'), nullable=False)
@@ -114,8 +171,8 @@ class Product(db.Model):
     carton_quantity = db.Column(db.Integer, default=1)  # pieces per carton
     is_active = db.Column(db.Boolean, default=True)
     image_url = db.Column(db.String(500))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utc_now)
+    updated_at = db.Column(db.DateTime, default=utc_now, onupdate=utc_now)
     
     # Foreign keys
     tenant_id = db.Column(db.String(36), db.ForeignKey('tenants.id'), nullable=False)
@@ -144,7 +201,7 @@ class Customer(db.Model):
     phone = db.Column(db.String(20))
     address = db.Column(db.Text)
     loyalty_points = db.Column(db.Integer, default=0)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utc_now)
     
     # Foreign keys
     tenant_id = db.Column(db.String(36), db.ForeignKey('tenants.id'), nullable=False)
@@ -181,7 +238,7 @@ class Sale(db.Model):
     payment_method = db.Column(db.String(20), nullable=False)  # cash, card, transfer
     payment_status = db.Column(db.String(20), default='completed')
     notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utc_now)
     
     # Foreign keys
     tenant_id = db.Column(db.String(36), db.ForeignKey('tenants.id'), nullable=False)
