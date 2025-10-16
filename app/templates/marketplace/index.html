@@ -70,7 +70,7 @@
     <div class="alert alert-info d-flex justify-content-between align-items-center">
         <div>
             <i class="bi bi-info-circle me-2"></i>
-            <strong>Infrormasi Pembayaran:</strong> Mohon transfer ke rekening yang tersedia dan upload bukti pembayaran saat stok ulang.
+            <strong>Informasi Pembayaran:</strong> Mohon transfer ke rekening yang tersedia dan upload bukti pembayaran saat stok ulang.
         </div>
         <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#paymentMethodsModal">
             Lihat Detail Pembayaran
@@ -82,7 +82,7 @@
         <div class="col">
             <div class="card h-100">
                 {% if item.image_url %}
-                <img src="{{ item.image_url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                <img src="{{ item.image_url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: contain;">
                 {% else %}
                 <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
                     <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
