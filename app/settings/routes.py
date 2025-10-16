@@ -1,4 +1,5 @@
 from datetime import datetime
+from email_validator import ValidatedEmail
 from flask import render_template, request, flash, redirect, url_for, jsonify, abort
 from flask_login import login_required, current_user
 from app.settings import bp
@@ -40,24 +41,59 @@ def user_management():
 @tenant_admin_required
 def create_user():
     """Halaman untuk membuat pengguna (kasir) baru."""
-    form = UserForm()
-    # Ganti validasi password menjadi wajib saat membuat user baru
-    form.password.validators.insert(0, DataRequired())
-    
-    if form.validate_on_submit():
+    if request.method == 'POST':
+        # Validasi form
+        username = request.form.get('username')
+        email = request.form.get('email')
+        role = request.form.get('role')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Validasi dasar
+        errors = []
+        if not username:
+            errors.append('Username is required')
+        if not email or not ValidatedEmail(email):
+            errors.append('Valid email is required')
+        if not password:
+            errors.append('Password is required for new user')
+        if password != confirm_password:
+            errors.append('Passwords do not match')
+        
+        # Cek apakah username/email sudah ada
+        existing_user = User.query.filter_by(username=username, tenant_id=current_user.tenant_id).first()
+        if existing_user:
+            errors.append('Username already exists')
+        
+        existing_email = User.query.filter_by(email=email, tenant_id=current_user.tenant_id).first()
+        if existing_email:
+            errors.append('Email already exists')
+        
+        if errors:
+            for error in errors:
+                flash(error, 'danger')
+            return render_template('settings/create_edit_user.html', 
+                                 title="Create New User", 
+                                 legend="New User")
+        
+        # Buat user baru
         new_user = User(
             id=str(uuid.uuid4()),
-            username=form.username.data,
-            email=form.email.data,
-            role=form.role.data,
+            username=username,
+            email=email,
+            role=role,
             tenant_id=current_user.tenant_id
         )
-        new_user.set_password(form.password.data)
+        new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
+        
         flash(f'User "{new_user.username}" has been created successfully.', 'success')
         return redirect(url_for('settings.user_management'))
-    return render_template('settings/create_edit_user.html', form=form, title="Create New User", legend="New User")
+    
+    return render_template('settings/create_edit_user.html', 
+                         title="Create New User", 
+                         legend="New User")
 
 
 @bp.route('/users/edit/<string:user_id>', methods=['GET', 'POST'])
@@ -67,19 +103,62 @@ def edit_user(user_id):
     """Halaman untuk mengedit pengguna yang sudah ada."""
     user_to_edit = User.query.get_or_404(user_id)
     if user_to_edit.tenant_id != current_user.tenant_id:
-        abort(403) # Pastikan admin hanya bisa mengedit user di tenantnya sendiri
+        abort(403)
 
-    form = UserForm(obj=user_to_edit, original_email=user_to_edit.email)
-    if form.validate_on_submit():
-        user_to_edit.username = form.username.data
-        user_to_edit.email = form.email.data
-        user_to_edit.role = form.role.data
-        if form.password.data:
-            user_to_edit.set_password(form.password.data)
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        role = request.form.get('role')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Validasi dasar
+        errors = []
+        if not username:
+            errors.append('Username is required')
+        if not email or not ValidatedEmail(email):
+            errors.append('Valid email is required')
+        if password and password != confirm_password:
+            errors.append('Passwords do not match')
+        
+        # Cek apakah username/email sudah ada (kecuali untuk user ini)
+        existing_user = User.query.filter(
+            User.username == username, 
+            User.tenant_id == current_user.tenant_id,
+            User.id != user_id
+        ).first()
+        if existing_user:
+            errors.append('Username already exists')
+        
+        existing_email = User.query.filter(
+            User.email == email, 
+            User.tenant_id == current_user.tenant_id,
+            User.id != user_id
+        ).first()
+        if existing_email:
+            errors.append('Email already exists')
+        
+        if errors:
+            for error in errors:
+                flash(error, 'danger')
+            return render_template('settings/create_edit_user.html', 
+                                 title="Edit User", 
+                                 legend=f"Edit User: {user_to_edit.username}")
+        
+        # Update user
+        user_to_edit.username = username
+        user_to_edit.email = email
+        user_to_edit.role = role
+        if password:
+            user_to_edit.set_password(password)
+        
         db.session.commit()
         flash(f'User "{user_to_edit.username}" has been updated.', 'success')
         return redirect(url_for('settings.user_management'))
-    return render_template('settings/create_edit_user.html', form=form, title="Edit User", legend=f"Edit User: {user_to_edit.username}")
+    
+    return render_template('settings/create_edit_user.html', 
+                         title="Edit User", 
+                         legend=f"Edit User: {user_to_edit.username}")
 
 
 @bp.route('/users/delete/<string:user_id>', methods=['POST'])

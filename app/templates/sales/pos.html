@@ -132,7 +132,7 @@
                                     {% endif %}
                                     <h6 class="card-title mb-1">{{ product.name }}</h6>
                                     <p class="card-text text-success mb-1">
-                                        <strong>${{ "%.2f"|format(product.price) }}</strong>
+                                        <strong>Rp{{ "%.2f"|format(product.price) }}</strong>
                                     </p>
                                     <small class="text-muted stock-badge">
                                         Stock: {{ product.stock_quantity }}
@@ -173,19 +173,19 @@
                     <div class="border-top pt-3">
                         <div class="row mb-2">
                             <div class="col">Subtotal:</div>
-                            <div class="col-auto">$<span id="subtotal">0.00</span></div>
+                            <div class="col-auto">Rp<span id="subtotal">0.00</span></div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">Pajak:</div>
-                            <div class="col-auto">$<span id="taxAmount">0.00</span></div>
+                            <div class="col-auto">Rp<span id="taxAmount">0.00</span></div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">Diskon:</div>
-                            <div class="col-auto">$<span id="discountAmount">0.00</span></div>
+                            <div class="col-auto">Rp<span id="discountAmount">0.00</span></div>
                         </div>
                         <div class="row mb-3 fw-bold fs-5">
                             <div class="col">Total:</div>
-                            <div class="col-auto">$<span id="cartTotal">0.00</span></div>
+                            <div class="col-auto">Rp<span id="cartTotal">0.00</span></div>
                         </div>
 
                         <!-- Customer Selection -->
@@ -440,20 +440,20 @@ document.querySelectorAll('.payment-method-btn').forEach(btn => {
     const change = amountPaid - total;
     
     // Update displays
-    document.getElementById('totalAmountDisplay').value = `$${total.toFixed(2)}`;
-    document.getElementById('changeAmount').value = `$${Math.max(change, 0).toFixed(2)}`;
+    document.getElementById('totalAmountDisplay').value = `Rp${total.toFixed(2)}`;
+    document.getElementById('changeAmount').value = `Rp${Math.max(change, 0).toFixed(2)}`;
     
     // Update change field styling
     const changeField = document.getElementById('changeAmount');
     if (change < 0) {
         changeField.className = 'form-control bg-danger text-white';
-        changeField.value = `-$${Math.abs(change).toFixed(2)}`;
+        changeField.value = `-Rp${Math.abs(change).toFixed(2)}`;
     } else if (change > 0) {
         changeField.className = 'form-control bg-success text-white';
-        changeField.value = `$${change.toFixed(2)}`;
+        changeField.value = `Rp${change.toFixed(2)}`;
     } else {
         changeField.className = 'form-control bg-light';
-        changeField.value = `$${change.toFixed(2)}`;
+        changeField.value = `Rp${change.toFixed(2)}`;
     }
     
     // Generate quick amount buttons
@@ -495,7 +495,7 @@ function generateQuickAmountButtons(total) {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'btn btn-outline-primary btn-sm';
-        button.textContent = `$${amount}`;
+        button.textContent = `Rp${amount}`;
         button.onclick = () => {
             document.getElementById('amountPaid').value = amount;
             updateCashForm();
@@ -578,7 +578,7 @@ document.getElementById('amountPaid').addEventListener('change', updateCashForm)
         if (!productElement) return;
 
         const productName = productElement.querySelector('.card-title').textContent;
-        const productPrice = parseFloat(productElement.querySelector('.card-text strong').textContent.replace('$', ''));
+        const productPrice = parseFloat(productElement.querySelector('.card-text strong').textContent.replace('Rp', ''));
         const stockQuantity = parseInt(productElement.querySelector('.stock-badge').textContent.replace('Stock: ', ''));
 
         const existingItem = cart.find(item => item.product_id === productId);
@@ -639,10 +639,10 @@ document.getElementById('amountPaid').addEventListener('change', updateCashForm)
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="flex-grow-1">
                             <h6 class="mb-1">${item.name}</h6>
-                            <small class="text-muted">$${item.unit_price.toFixed(2)} × ${item.quantity}</small>
+                            <small class="text-muted">Rp${item.unit_price.toFixed(2)} × ${item.quantity}</small>
                         </div>
                         <div class="text-end">
-                            <strong>$${item.total_price.toFixed(2)}</strong>
+                            <strong>Rp${item.total_price.toFixed(2)}</strong>
                             <div class="mt-1">
                                 <button class="btn btn-sm btn-outline-secondary" onclick="updateQuantity(${index}, -1)">
                                     <i class="bi bi-dash"></i>
@@ -720,7 +720,7 @@ document.getElementById('amountPaid').addEventListener('change', updateCashForm)
         }
         
         if (amountPaid < total) {
-            showTemporaryMessage(`Insufficient payment. Total: $${total.toFixed(2)}, Paid: $${amountPaid.toFixed(2)}`, 'danger');
+            showTemporaryMessage(`Insufficient payment. Total: Rp${total.toFixed(2)}, Paid: Rp${amountPaid.toFixed(2)}`, 'danger');
             document.getElementById('amountPaid').focus();
             return;
         }
@@ -763,7 +763,7 @@ document.getElementById('amountPaid').addEventListener('change', updateCashForm)
         if (data.success) {
             // Show success modal
             document.getElementById('receiptNumber').textContent = data.receipt_number;
-            document.getElementById('receiptTotal').textContent = '$' + saleData.total_amount.toFixed(2);
+            document.getElementById('receiptTotal').textContent = 'Rp' + saleData.total_amount.toFixed(2);
             document.getElementById('viewReceiptBtn').href = `/sales/receipt/${data.sale_id}`;
             const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
             modal.show();

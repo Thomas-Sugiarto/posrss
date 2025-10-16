@@ -129,21 +129,21 @@
                     <div class="receipt-totals p-3 rounded">
                         <div class="row mb-1">
                             <div class="col">Subtotal:</div>
-                            <div class="col-auto">${{ "%.2f"|format(sale.total_amount - sale.tax_amount) }}</div>
+                            <div class="col-auto">Rp{{ "%.2f"|format(sale.total_amount - sale.tax_amount) }}</div>
                         </div>
                         <div class="row mb-1">
                             <div class="col">Tax (10%):</div>
-                            <div class="col-auto">${{ "%.2f"|format(sale.tax_amount) }}</div>
+                            <div class="col-auto">Rp{{ "%.2f"|format(sale.tax_amount) }}</div>
                         </div>
                         {% if sale.discount_amount > 0 %}
                         <div class="row mb-1">
                             <div class="col">Discount:</div>
-                            <div class="col-auto">-${{ "%.2f"|format(sale.discount_amount) }}</div>
+                            <div class="col-auto">-Rp{{ "%.2f"|format(sale.discount_amount) }}</div>
                         </div>
                         {% endif %}
                         <div class="row mb-1 fw-bold">
                             <div class="col">TOTAL:</div>
-                            <div class="col-auto">${{ "%.2f"|format(sale.total_amount) }}</div>
+                            <div class="col-auto">Rp{{ "%.2f"|format(sale.total_amount) }}</div>
                         </div>
                         <div class="row">
                             <div class="col">Payment:</div>

@@ -19,9 +19,12 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
-                <i class="bi bi-cart-check"></i> KreasiPOS Enterprise
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('dashboard.index') }}">
+                <img src="{{ url_for('static', filename='assets/logo-putih.png') }}" 
+                    alt="KreasiPOS Logo" 
+                    style="height: 45px; width: auto; margin-right: 8px;">
             </a>
+
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -105,7 +108,7 @@
                             <li><span class="dropdown-item-text">Role: {{ current_user.role|replace('_', ' ')|title }}</span></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
-                                <i class="bi bi-box-arrow-right"></i> Logout
+                                <i class="bi bi-box-arrow-right"></i> Keluar
                             </a></li>
                         </ul>
                     </li>
