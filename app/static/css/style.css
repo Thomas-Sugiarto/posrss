@@ -4,7 +4,7 @@
     --secondary-color: #858796;
     --success-color: #1cc88a;
     --info-color: #36b9cc;
-    --warning-color: #f6c23e;
+    --warning-color: #fd7e14;
     --danger-color: #e74a3b;
     --light-color: #f8f9fc;
     --dark-color: #5a5c69;
@@ -203,8 +203,22 @@ body {
 .stat-card.danger {
     border-left-color: var(--danger-color);
 }
+.stats-card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: transform 0.2s;
+    border-left: 4px solid;
+    }
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+.stats-icon {
+    font-size: 2.5rem;
+    opacity: 0.8;
+    }
 
-/* Tables */
+    /* Tables */
 .table th {
     border-top: none;
     font-weight: 700;

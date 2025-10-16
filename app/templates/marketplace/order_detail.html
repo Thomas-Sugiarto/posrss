@@ -14,30 +14,30 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Order Information</h5>
+                    <h5 class="mb-0">Informasi Pesanan</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <table class="table table-sm">
                                 <tr>
-                                    <th>Product:</th>
+                                    <th>Produk:</th>
                                     <td>{{ order.marketplace_item.name }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Quantity:</th>
+                                    <th>Kuantitas:</th>
                                     <td>{{ order.quantity }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Price per item:</th>
+                                    <th>Harga per item:</th>
                                     <td>{{ "Rp {:,.0f}".format(order.marketplace_item.price) }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Total Amount:</th>
+                                    <th>Jumlah Total:</th>
                                     <td class="fw-bold text-primary">{{ "Rp {:,.0f}".format(order.total_amount) }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Order Date:</th>
+                                    <th>Tanggal Pesanan:</th>
                                     <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                 </tr>
                             </table>
@@ -48,11 +48,11 @@
                                     <th>Status:</th>
                                     <td>
                                         {% if order.status.value == 'pending' %}
-                                            <span class="badge bg-warning">Pending Verification</span>
+                                            <span class="badge bg-warning">Verifikasi Tertunda</span>
                                         {% elif order.status.value == 'verified' %}
-                                            <span class="badge bg-success">Verified</span>
+                                            <span class="badge bg-success">Diterima</span>
                                         {% else %}
-                                            <span class="badge bg-danger">Rejected</span>
+                                            <span class="badge bg-danger">Ditolak</span>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -72,7 +72,7 @@
 
                     <div class="row mt-4">
                         <div class="col-md-6">
-                            <h6>Shipping Address</h6>
+                            <h6>Alamat Pengiriman</h6>
                             <div class="border rounded p-3 bg-light">
                                 <strong>{{ order.tenant.name }}</strong><br>
                                 {{ order.shipping_address }}<br>
@@ -83,7 +83,7 @@
                         <div class="col-md-6">
                             <h6>Notes</h6>
                             <div class="border rounded p-3">
-                                <strong>Your Notes:</strong><br>
+                                <strong>Notes Anda:</strong><br>
                                 {% if order.notes %}
                                     {{ order.notes }}
                                 {% else %}
@@ -92,7 +92,7 @@
                                 
                                 {% if order.admin_notes %}
                                 <hr>
-                                <strong>Admin Notes:</strong><br>
+                                <strong>Notes Admin:</strong><br>
                                 {{ order.admin_notes }}
                                 {% endif %}
                             </div>
@@ -101,7 +101,7 @@
 
                     {% if order.payment_proof_url %}
                     <div class="mt-4">
-                        <h6>Payment Proof</h6>
+                        <h6>Bukti Pembayaran</h6>
                         <div class="text-center">
                             <img src="{{ order.payment_proof_url }}" alt="Payment Proof" class="img-fluid rounded border" style="max-height: 400px;">
                             <div class="mt-2">
@@ -123,27 +123,27 @@
                 </div>
                 <div class="card-body text-center">
                     <a href="{{ url_for('marketplace.restock_orders') }}" class="btn btn-outline-primary w-100 mb-2">
-                        <i class="bi bi-list-check"></i> My Orders
+                        <i class="bi bi-list-check"></i> Pesanan Saya
                     </a>
                     <a href="{{ url_for('marketplace.index') }}" class="btn btn-outline-success w-100 mb-2">
-                        <i class="bi bi-cart-plus"></i> Continue Shopping
+                        <i class="bi bi-cart-plus"></i> Lanjut Belanja
                     </a>
                     <a href="{{ url_for('marketplace.my_address') }}" class="btn btn-outline-info w-100">
-                        <i class="bi bi-geo-alt"></i> My Address
+                        <i class="bi bi-geo-alt"></i> Alamat Saya
                     </a>
                 </div>
             </div>
             
             <div class="card mt-3">
                 <div class="card-header">
-                    <h6 class="mb-0">Order Timeline</h6>
+                    <h6 class="mb-0">Timeline Pemesanan</h6>
                 </div>
                 <div class="card-body">
                     <div class="timeline">
                         <div class="timeline-item {% if order.status.value != 'pending' %}completed{% endif %}">
                             <div class="timeline-marker"></div>
                             <div class="timeline-content">
-                                <h6>Order Created</h6>
+                                <h6>Pesanan Dibuat</h6>
                                 <p class="text-muted small">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
                             </div>
                         </div>
@@ -152,7 +152,7 @@
                         <div class="timeline-item completed">
                             <div class="timeline-marker"></div>
                             <div class="timeline-content">
-                                <h6>Order {{ order.status.value|title }}</h6>
+                                <h6>Pesanan {{ order.status.value|title }}</h6>
                                 <p class="text-muted small">{{ order.verified_at.strftime('%Y-%m-%d %H:%M') }}</p>
                                 {% if order.verifier %}
                                 <p class="small">By: {{ order.verifier.username }}</p>

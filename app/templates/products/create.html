@@ -58,7 +58,7 @@
                                         <div class="mb-3">
                                             {{ form.price.label(class="form-label") }}
                                             <div class="input-group">
-                                                <span class="input-group-text">$</span>
+                                                <span class="input-group-text">Rp</span>
                                                 {{ form.price(class="form-control" + (" is-invalid" if form.price.errors else "")) }}
                                             </div>
                                             {% for error in form.price.errors %}
@@ -70,7 +70,7 @@
                                         <div class="mb-3">
                                             {{ form.cost_price.label(class="form-label") }}
                                             <div class="input-group">
-                                                <span class="input-group-text">$</span>
+                                                <span class="input-group-text">Rp</span>
                                                 {{ form.cost_price(class="form-control" + (" is-invalid" if form.cost_price.errors else "")) }}
                                             </div>
                                             {% for error in form.cost_price.errors %}

@@ -79,13 +79,13 @@
     <div class="row mb-4">
         <div class="col">
             <h1 class="h3 mb-0">
-                <i class="bi bi-cash-coin"></i> Point of Sale
+                <i class="bi bi-cash"></i> Point of Sale
             </h1>
-            <small class="text-muted">Process sales transactions quickly and efficiently</small>
+            <small class="text-muted">Pemrosesan transaksi penjualan secara cepat dan efisien</small>
         </div>
         <div class="col-auto">
             <a href="{{ url_for('sales.history') }}" class="btn btn-outline-primary">
-                <i class="bi bi-clock-history"></i> Sales History
+                <i class="bi bi-clock-history"></i> Riwayat Penjualan
             </a>
         </div>
     </div>
@@ -96,7 +96,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-grid"></i> Products
+                        <i class="bi bi-box-seam"></i> Produk
                     </h5>
                 </div>
                 <div class="card-body">
@@ -104,14 +104,14 @@
                     <div class="search-box">
                         <div class="position-relative">
                             <input type="text" id="searchProduct" class="form-control barcode-input" 
-                                   placeholder="Type product name, SKU, or scan barcode..." 
+                                   placeholder="Ketik nama produk, SKU, atau scan barcode..." 
                                    autocomplete="off" autofocus>
                             <div class="scan-indicator">
                                 <i class="bi bi-upc-scan"></i>
                             </div>
                         </div>
                         <div class="form-text">
-                            <i class="bi bi-info-circle"></i> Scan barcode or type to search. Press Enter to add product.
+                            <i class="bi bi-info-circle"></i> Scan barcode atau ketik untuk mencari. Klik Enter untuk menambah produk.
                         </div>
                     </div>
 
@@ -154,7 +154,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-cart"></i> Shopping Cart
+                        <i class="bi bi-cart"></i> Keranjang Belanja
                         <span class="badge bg-primary ms-2" id="cartCount">0</span>
                     </h5>
                 </div>
@@ -164,7 +164,7 @@
                         <div id="cartItems">
                             <div class="text-center text-muted py-4">
                                 <i class="bi bi-cart-x display-4"></i>
-                                <p class="mt-2">Cart is empty</p>
+                                <p class="mt-2">Keranjang sedang kosong</p>
                             </div>
                         </div>
                     </div>
@@ -176,11 +176,11 @@
                             <div class="col-auto">$<span id="subtotal">0.00</span></div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col">Tax:</div>
+                            <div class="col">Pajak:</div>
                             <div class="col-auto">$<span id="taxAmount">0.00</span></div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col">Discount:</div>
+                            <div class="col">Diskon:</div>
                             <div class="col-auto">$<span id="discountAmount">0.00</span></div>
                         </div>
                         <div class="row mb-3 fw-bold fs-5">
@@ -202,13 +202,13 @@
                         <!-- Payment Method -->
                         <!-- Payment Method -->
 <div class="mb-3">
-    <label class="form-label">Payment Method</label>
+    <label class="form-label">Metode Pembayaran</label>
     <div class="payment-methods">
         <div class="payment-method-btn active" data-method="cash">
-            <i class="bi bi-cash"></i><br>Cash
+            <i class="bi bi-cash"></i><br>Tunai
         </div>
         <div class="payment-method-btn" data-method="card">
-            <i class="bi bi-credit-card"></i><br>Card
+            <i class="bi bi-credit-card"></i><br>Kartu
         </div>
         <div class="payment-method-btn" data-method="transfer">
             <i class="bi bi-bank"></i><br>Transfer
@@ -223,31 +223,31 @@
         <div class="card border-primary">
             <div class="card-body">
                 <h6 class="card-title mb-3">
-                    <i class="bi bi-cash-coin text-primary"></i> Cash Payment
+                    <i class="bi bi-cash-coin text-primary"></i> Pembayaran Tunai
                 </h6>
                 
                 <div class="row mb-3">
                     <div class="col">
-                        <label class="form-label">Total Amount</label>
+                        <label class="form-label">Total Biaya</label>
                         <input type="text" class="form-control bg-light" id="totalAmountDisplay" 
-                               value="$0.00" readonly style="font-weight: bold; font-size: 1.1em;">
+                               value="Rp0.00" readonly style="font-weight: bold; font-size: 1.1em;">
                     </div>
                 </div>
                 
                 <div class="row mb-3">
                     <div class="col">
-                        <label class="form-label">Amount Paid <span class="text-danger">*</span></label>
+                        <label class="form-label">Total Dibayar <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" id="amountPaid" 
                                placeholder="Enter amount paid" step="0.01" min="0">
-                        <div class="form-text">Enter the cash amount received from customer</div>
+                        <div class="form-text">Masukkan jumlah uang tunai yang diserahkan customer</div>
                     </div>
                 </div>
                 
                 <div class="row">
                     <div class="col">
-                        <label class="form-label">Change</label>
+                        <label class="form-label">Kembalian</label>
                         <input type="text" class="form-control bg-success text-white" id="changeAmount" 
-                               value="$0.00" readonly style="font-weight: bold; font-size: 1.1em;">
+                               value="Rp0.00" readonly style="font-weight: bold; font-size: 1.1em;">
                     </div>
                 </div>
                 
@@ -265,7 +265,7 @@
 
                         <!-- Notes -->
                         <div class="mb-3">
-                            <label class="form-label">Notes (Optional)</label>
+                            <label class="form-label">Catatan (Opsional)</label>
                             <textarea class="form-control" id="saleNotes" rows="2" 
                                       placeholder="Add notes for this sale..."></textarea>
                         </div>
@@ -273,10 +273,10 @@
                         <!-- Action Buttons -->
                         <div class="d-grid gap-2">
                             <button class="btn btn-success btn-lg" onclick="processSale()">
-                                <i class="bi bi-check-circle"></i> Complete Sale
+                                <i class="bi bi-check-circle"></i> Selesaikan Penjualan
                             </button>
                             <button class="btn btn-outline-danger" onclick="clearCart()">
-                                <i class="bi bi-trash"></i> Clear Cart
+                                <i class="bi bi-trash"></i> Kosongkan Keranjang
                             </button>
                         </div>
                     </div>

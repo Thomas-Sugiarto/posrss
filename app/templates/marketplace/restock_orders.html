@@ -17,16 +17,16 @@
                 <div class="card-body">
                     <div class="btn-group" role="group">
                         <a href="{{ url_for('marketplace.restock_orders') }}" class="btn btn-outline-secondary {% if not request.args.get('status') %}active{% endif %}">
-                            All Orders
+                            Semua Pesanan
                         </a>
                         <a href="{{ url_for('marketplace.restock_orders', status='pending') }}" class="btn btn-outline-warning {% if request.args.get('status') == 'pending' %}active{% endif %}">
-                            Pending
+                            Tertunda
                         </a>
                         <a href="{{ url_for('marketplace.restock_orders', status='verified') }}" class="btn btn-outline-success {% if request.args.get('status') == 'verified' %}active{% endif %}">
-                            Verified
+                            Diterima
                         </a>
                         <a href="{{ url_for('marketplace.restock_orders', status='rejected') }}" class="btn btn-outline-danger {% if request.args.get('status') == 'rejected' %}active{% endif %}">
-                            Rejected
+                            Ditolak
                         </a>
                     </div>
                 </div>
@@ -41,13 +41,13 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Order Date</th>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Total Amount</th>
+                            <th>Tanggal Pesan</th>
+                            <th>Produk</th>
+                            <th>Kuantitas</th>
+                            <th>Jumlah Total</th>
                             <th>Status</th>
                             <th>Admin Notes</th>
-                            <th class="text-center">Actions</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,21 +57,21 @@
                             <td>
                                 <strong>{{ order.marketplace_item.name }}</strong>
                                 {% if order.notes %}
-                                <br><small class="text-muted">Your note: {{ order.notes[:50] }}{% if order.notes|length > 50 %}...{% endif %}</small>
+                                <br><small class="text-muted">Note Anda: {{ order.notes[:50] }}{% if order.notes|length > 50 %}...{% endif %}</small>
                                 {% endif %}
                             </td>
                             <td>{{ order.quantity }}</td>
                             <td>{{ "Rp {:,.0f}".format(order.total_amount) }}</td>
                             <td>
                                 {% if order.status.value == 'pending' %}
-                                    <span class="badge bg-warning"><i class="bi bi-clock"></i> Pending</span>
+                                    <span class="badge bg-warning"><i class="bi bi-clock"></i> Tertunda</span>
                                 {% elif order.status.value == 'verified' %}
-                                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Verified</span>
+                                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Diterima</span>
                                     {% if order.verified_at %}
                                     <br><small class="text-muted">{{ order.verified_at.strftime('%m/%d %H:%M') }}</small>
                                     {% endif %}
                                 {% else %}
-                                    <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Rejected</span>
+                                    <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Ditolak</span>
                                     {% if order.verified_at %}
                                     <br><small class="text-muted">{{ order.verified_at.strftime('%m/%d %H:%M') }}</small>
                                     {% endif %}
@@ -102,38 +102,38 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="orderModalLabel{{ order.id }}">Order Details - {{ order.marketplace_item.name }}</h5>
+                            <h5 class="modal-title" id="orderModalLabel{{ order.id }}">Detail Pesanan - {{ order.marketplace_item.name }}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h6>Order Information</h6>
+                                    <h6>Informasi Pesanan</h6>
                                     <table class="table table-sm">
                                         <tr>
-                                            <th>Product:</th>
+                                            <th>Produk:</th>
                                             <td>{{ order.marketplace_item.name }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Quantity:</th>
+                                            <th>Kuantitas:</th>
                                             <td>{{ order.quantity }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Price per item:</th>
+                                            <th>Harga per item:</th>
                                             <td>{{ "Rp {:,.0f}".format(order.marketplace_item.price) }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Total Amount:</th>
+                                            <th>Jumlah Total:</th>
                                             <td class="fw-bold text-primary">{{ "Rp {:,.0f}".format(order.total_amount) }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Order Date:</th>
+                                            <th>Tanggal Pesan:</th>
                                             <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                         </tr>
                                     </table>
                                     <div class="row mt-3">
                                         <div class="col-12">
-                                            <h6>Shipping Address</h6>
+                                            <h6>Alamat Pengiriman</h6>
                                             <div class="border rounded p-3 bg-light">
                                                 <strong>{{ order.tenant.name }}</strong><br>
                                                 {{ order.shipping_address }}<br>
@@ -144,17 +144,17 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <h6>Status Information</h6>
+                                    <h6>Informasi Status</h6>
                                     <table class="table table-sm">
                                         <tr>
                                             <th>Status:</th>
                                             <td>
                                                 {% if order.status.value == 'pending' %}
-                                                    <span class="badge bg-warning">Pending Verification</span>
+                                                    <span class="badge bg-warning">Verifikasi Tertunda</span>
                                                 {% elif order.status.value == 'verified' %}
-                                                    <span class="badge bg-success">Verified</span>
+                                                    <span class="badge bg-success">Diterima</span>
                                                 {% else %}
-                                                    <span class="badge bg-danger">Rejected</span>
+                                                    <span class="badge bg-danger">Ditolak</span>
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -179,7 +179,7 @@
                                         {% if order.notes %}
                                             {{ order.notes }}
                                         {% else %}
-                                            <span class="text-muted">No notes provided</span>
+                                            <span class="text-muted">Tidak ada notes</span>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -189,7 +189,7 @@
                                         {% if order.admin_notes %}
                                             <p class="mb-0">{{ order.admin_notes }}</p>
                                         {% else %}
-                                            <span class="text-muted">No admin notes yet</span>
+                                            <span class="text-muted">Belum ada notes admin</span>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -220,16 +220,16 @@
             {% else %}
             <div class="text-center py-5">
                 <i class="bi bi-inbox display-1 text-muted"></i>
-                <h4 class="mt-3 text-muted">No orders found</h4>
+                <h4 class="mt-3 text-muted">Tidak ada pesanan ditemukan</h4>
                 <p class="text-muted">
                     {% if request.args.get('status') %}
                         No {{ request.args.get('status') }} orders.
                     {% else %}
-                        You haven't placed any restock orders yet.
+                        Anda belum memesan apapun.
                     {% endif %}
                 </p>
                 <a href="{{ url_for('marketplace.index') }}" class="btn btn-primary">
-                    <i class="bi bi-cart-plus"></i> Start Shopping
+                    <i class="bi bi-cart-plus"></i> Mulai Belanja
                 </a>
             </div>
             {% endif %}
@@ -259,7 +259,7 @@
             <div class="card bg-success text-white">
                 <div class="card-body text-center">
                     <h4>{{ orders|selectattr('status.value', 'equalto', 'verified')|list|length }}</h4>
-                    <p class="mb-0">Verified</p>
+                    <p class="mb-0">Diterima</p>
                 </div>
             </div>
         </div>
@@ -267,7 +267,7 @@
             <div class="card bg-danger text-white">
                 <div class="card-body text-center">
                     <h4>{{ orders|selectattr('status.value', 'equalto', 'rejected')|list|length }}</h4>
-                    <p class="mb-0">Rejected</p>
+                    <p class="mb-0">Ditolak</p>
                 </div>
             </div>
         </div>

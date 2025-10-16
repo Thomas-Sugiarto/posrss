@@ -31,7 +31,7 @@
                     
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Price per item</label>
+                            <label class="form-label">Harga per item</label>
                             <input type="text" class="form-control" value="{{ "Rp {:,.0f}".format(item.price) }}" readonly>
                         </div>
                         <div class="col-md-6">
@@ -45,14 +45,14 @@
 
                     <!-- Total Amount -->
                     <div class="mb-3">
-                        <label class="form-label">Total Amount</label>
+                        <label class="form-label">Total Harga</label>
                         <input type="text" class="form-control" id="totalAmount" value="{{ "Rp {:,.0f}".format(item.price) }}" readonly>
                     </div>
 
                     <!-- Shipping Address Section -->
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h6 class="mb-0"><i class="bi bi-truck"></i> Shipping Address</h6>
+                            <h6 class="mb-0"><i class="bi bi-truck"></i> Alamat Pengiriman</h6>
                         </div>
                         <div class="card-body">
                             {% if tenant.address %}
@@ -167,8 +167,8 @@
                 {% else %}
                     <div class="text-center text-muted py-4">
                         <i class="bi bi-credit-card display-4"></i>
-                        <p class="mt-2">No payment methods available</p>
-                        <small>Please contact administrator for payment information.</small>
+                        <p class="mt-2">Tidak ada metode pembayaran tersedia</p>
+                        <small>Mohon kontak administrator untuk informasi pembayaran.</small>
                     </div>
                 {% endif %}
             </div>

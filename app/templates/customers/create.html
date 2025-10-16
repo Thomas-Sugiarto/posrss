@@ -25,14 +25,14 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ url_for('customers.index') }}">Customers</a></li>
-                            <li class="breadcrumb-item active">Add New Customer</li>
+                            <li class="breadcrumb-item active">Tambah Pelanggan Baru</li>
                         </ol>
                     </nav>
                     
                     <h1 class="h2 mb-0">
                         <i class="bi bi-person-plus"></i> {{ title }}
                     </h1>
-                    <small class="text-muted">Add a new customer to your database</small>
+                    <small class="text-muted">Tambah customer baru ke database Anda</small>
                 </div>
             </div>
 
@@ -40,7 +40,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-person-badge"></i> Customer Information
+                        <i class="bi bi-person-badge"></i> Informasi Pelanggan
                     </h5>
                 </div>
                 <div class="card-body">
@@ -50,8 +50,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
-                                    {{ form.name(class="form-control", placeholder="Enter customer full name") }}
+                                    <label for="name" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                                    {{ form.name(class="form-control", placeholder="Masukkan nama lengkap pelanggan") }}
                                     {% if form.name.errors %}
                                         <div class="text-danger small mt-1">
                                             {% for error in form.name.errors %}
@@ -59,13 +59,13 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <div class="form-text">Customer's full name as it should appear on receipts</div>
+                                    <div class="form-text">Nama lengkap pelanggan akan muncul dalam struk</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone Number</label>
-                                    {{ form.phone(class="form-control", placeholder="e.g., +62 812-3456-7890") }}
+                                    <label for="phone" class="form-label">Nomor Telepon</label>
+                                    {{ form.phone(class="form-control", placeholder="Contoh: +62 812-3456-7890") }}
                                     {% if form.phone.errors %}
                                         <div class="text-danger small mt-1">
                                             {% for error in form.phone.errors %}
@@ -73,14 +73,14 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <div class="form-text">Primary contact number</div>
+                                    <div class="form-text">Kontak utama pelanggan</div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            {{ form.email(class="form-control", placeholder="customer@example.com") }}
+                            <label for="email" class="form-label">Alamat Email</label>
+                            {{ form.email(class="form-control", placeholder="customer@contoh.com") }}
                             {% if form.email.errors %}
                                 <div class="text-danger small mt-1">
                                     {% for error in form.email.errors %}
@@ -88,12 +88,12 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                            <div class="form-text">For receipts and notifications</div>
+                            <div class="form-text">Untuk struk dan notifikasi</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            {{ form.address(class="form-control", rows="4", placeholder="Enter complete address including city and postal code") }}
+                            <label for="address" class="form-label">Alamat</label>
+                            {{ form.address(class="form-control", rows="4", placeholder="Masukkan alamat lengkap termasuk kota dan kode pos") }}
                             {% if form.address.errors %}
                                 <div class="text-danger small mt-1">
                                     {% for error in form.address.errors %}
@@ -101,20 +101,20 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                            <div class="form-text">Complete customer address for delivery purposes</div>
+                            <div class="form-text">Lengkapi alamat pelanggan untuk layanan pengiriman</div>
                         </div>
 
                         <div class="alert alert-info">
                             <i class="bi bi-info-circle"></i>
-                            <strong>Note:</strong> Only the customer name is required. Other fields are optional but recommended for better customer service.
+                            <strong>Note:</strong> Yang diwajibkan hanyalah nama pelanggan. Bagian lain merupakan opsional namun direkomendasikan untuk pelayanan pelanggan yang lebih baik.
                         </div>
 
                         <div class="d-flex justify-content-between">
                             <a href="{{ url_for('customers.index') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left"></i> Back to Customers
+                                <i class="bi bi-arrow-left"></i> Kembali ke Manajemen Pelanggan
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> Create Customer
+                                <i class="bi bi-check-circle"></i> Buat Pelanggan
                             </button>
                         </div>
                     </form>
@@ -132,19 +132,19 @@
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2">
                             <i class="bi bi-check text-success"></i>
-                            <strong>Complete Information:</strong> Fill in all fields for better customer insights
+                            <strong>Informasi Lengkap:</strong> Isi semua bagian untuk insight pelanggan yang lebih baik
                         </li>
                         <li class="mb-2">
                             <i class="bi bi-check text-success"></i>
-                            <strong>Phone Numbers:</strong> Use international format for consistency
+                            <strong>Nomor Telepon:</strong> Gunakan format internasioanl untuk konsistensi
                         </li>
                         <li class="mb-2">
                             <i class="bi bi-check text-success"></i>
-                            <strong>Email:</strong> Useful for sending digital receipts and promotions
+                            <strong>Email:</strong> Berguna untuk mengirim struk digital dan promosi
                         </li>
                         <li>
                             <i class="bi bi-check text-success"></i>
-                            <strong>Address:</strong> Essential for delivery services and location-based marketing
+                            <strong>Alamat:</strong> Penting untuk layanan pengiriman dan pemasaran berbasis lokasi
                         </li>
                     </ul>
                 </div>

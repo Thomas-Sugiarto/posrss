@@ -68,9 +68,9 @@
     <div class="row mb-4">
         <div class="col">
             <h1 class="h2 mb-0">
-                <i class="bi bi-speedometer2"></i> Dashboard
+                <i class="bi bi-grid"></i> Dashboard
             </h1>
-            <small class="text-muted">Real-time business overview and analytics</small>
+            <small class="text-muted">Tinjauan dan analitik bisnis secara real-time</small>
         </div>
         <div class="col-auto">
             <div class="dropdown">
@@ -95,8 +95,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="card-title text-muted mb-0">Today's Revenue</h6>
-                            <h3 class="mb-0 text-primary">${{ "%.2f"|format(today_revenue) }}</h3>
+                            <h6 class="card-title text-muted mb-0">Pendapatan Hari Ini</h6>
+                            <h3 class="mb-0 text-primary">Rp{{ "%.2f"|format(today_revenue) }}</h3>
                             <small class="text-muted">{{ today_transactions }} transactions</small>
                         </div>
                         <div class="align-self-center">
@@ -120,9 +120,9 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="card-title text-muted mb-0">Today's Transactions</h6>
+                            <h6 class="card-title text-muted mb-0">Transaksi Hari Ini</h6>
                             <h3 class="mb-0 text-success">{{ today_transactions }}</h3>
-                            <small class="text-muted">Sales completed</small>
+                            <small class="text-muted">Penjualan Selesai</small>
                         </div>
                         <div class="align-self-center">
                             <i class="bi bi-cart-check stats-icon text-success"></i>
@@ -141,22 +141,22 @@
 
         <!-- Total Products -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stats-card h-100" style="border-left-color: #fd7e14;">
+            <div class="card stats-card h-100" style="border-left-color: var(--bs-warning);">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="card-title text-muted mb-0">Active Products</h6>
-                            <h3 class="mb-0 text-warning">{{ total_products }}</h3>
+                            <h6 class="card-title text-muted mb-0">Produk Aktif</h6>
+                            <h3 class="mb-0" style="-webkit-text-fill-color: var(--bs-warning)">{{ total_products }}</h3>
                             <small class="text-muted">In inventory</small>
                         </div>
                         <div class="align-self-center">
-                            <i class="bi bi-box-seam stats-icon text-warning"></i>
+                            <i class="bi bi-box-seam stats-icon" style="-webkit-text-fill-color: var(--bs-warning);"></i>
                         </div>
                     </div>
                     <div class="mt-3">
                         <div class="progress" style="height: 6px;">
-                            <div class="progress-bar bg-warning" role="progressbar" 
-                                 style="width: {{ (total_products / (total_products + 10)) * 100 if total_products > 0 else 0 }}%">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="background-color: var(--bs-warning); width: {{ (total_products / (total_products + 10)) * 100 if total_products > 0 else 0 }}%">
                             </div>
                         </div>
                     </div>
@@ -170,9 +170,9 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="card-title text-muted mb-0">Low Stock Alert</h6>
+                            <h6 class="card-title text-muted mb-0">Peringatan Stok Menipis</h6>
                             <h3 class="mb-0 text-danger">{{ low_stock_products }}</h3>
-                            <small class="text-muted">Need restocking</small>
+                            <small class="text-muted">Butuh stok ulang</small>
                         </div>
                         <div class="align-self-center">
                             <i class="bi bi-exclamation-triangle stats-icon text-danger"></i>
@@ -197,14 +197,14 @@
     <div class="chart-container">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="mb-0">
-                <i class="bi bi-bar-chart"></i> Sales Trend
+                <i class="bi bi-bar-chart"></i> Tren Penjualan
             </h5>
             <div class="btn-group btn-group-sm" role="group">
                 <button type="button" class="btn btn-outline-primary active" data-metric="revenue">
-                    Revenue
+                    Pendapatan
                 </button>
                 <button type="button" class="btn btn-outline-primary" data-metric="transactions">
-                    Transactions
+                    Transaksi
                 </button>
             </div>
         </div>
@@ -219,7 +219,7 @@
             <div class="chart-container">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">
-                        <i class="bi bi-star"></i> Top Products
+                        <i class="bi bi-star"></i> Produk Teratas
                     </h5>
                     <small class="text-muted" id="topProductsPeriod">Last 30 days</small>
                 </div>
@@ -228,7 +228,7 @@
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
-                        <p class="mt-2 text-muted">Loading top products...</p>
+                        <p class="mt-2 text-muted">Loading produk teratas...</p>
                     </div>
                 </div>
             </div>
@@ -242,7 +242,7 @@
             <div class="chart-container">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">
-                        <i class="bi bi-clock-history"></i> Recent Activity
+                        <i class="bi bi-clock-history"></i> Aktivitas Terbaru
                     </h5>
                     <button class="btn btn-sm btn-outline-primary" id="refreshActivity">
                         <i class="bi bi-arrow-clockwise"></i> Refresh
@@ -256,7 +256,7 @@
                                 <div>
                                     <h6 class="mb-1">
                                         <i class="bi bi-cart-check text-primary"></i>
-                                        Sale Completed
+                                        Penjualan Selesai
                                     </h6>
                                     <p class="mb-1 small">
                                         Receipt: <strong>{{ sale.receipt_number }}</strong> • 
@@ -270,7 +270,7 @@
                                 </div>
                                 <a href="{{ url_for('sales.receipt', sale_id=sale.id) }}" 
                                    class="btn btn-sm btn-outline-primary">
-                                    View
+                                    Lihat
                                 </a>
                             </div>
                         </div>
@@ -278,8 +278,8 @@
                     {% else %}
                     <div class="empty-state">
                         <i class="bi bi-activity display-4"></i>
-                        <h6 class="mt-2">No Recent Activity</h6>
-                        <p class="small text-muted">Sales activity will appear here</p>
+                        <h6 class="mt-2">Tidak Ada Aktivitas Terbaru</h6>
+                        <p class="small text-muted">Aktivitas penjualan </p>
                     </div>
                     {% endif %}
                 </div>
@@ -297,9 +297,9 @@
                     <div class="col-md-6">
                         <a href="{{ url_for('sales.pos') }}" class="card quick-action-btn text-decoration-none text-dark">
                             <div class="card-body text-center p-3">
-                                <i class="bi bi-cash-coin display-6 text-primary mb-2"></i>
+                                <i class="bi bi-cash display-6 text-primary mb-2"></i>
                                 <h6 class="card-title mb-1">POS</h6>
-                                <p class="card-text small text-muted mb-0">Start new sale</p>
+                                <p class="card-text small text-muted mb-0">Mulai penjualan baru</p>
                             </div>
                         </a>
                     </div>
@@ -310,7 +310,7 @@
                             <div class="card-body text-center p-3">
                                 <i class="bi bi-box-seam display-6 text-success mb-2"></i>
                                 <h6 class="card-title mb-1">Products</h6>
-                                <p class="card-text small text-muted mb-0">Manage inventory</p>
+                                <p class="card-text small text-muted mb-0">Kelola persediaan</p>
                             </div>
                         </a>
                     </div>
@@ -321,7 +321,7 @@
                             <div class="card-body text-center p-3">
                                 <i class="bi bi-people display-6 text-info mb-2"></i>
                                 <h6 class="card-title mb-1">Customers</h6>
-                                <p class="card-text small text-muted mb-0">View customers</p>
+                                <p class="card-text small text-muted mb-0">Lihat customer</p>
                             </div>
                         </a>
                     </div>
@@ -332,7 +332,7 @@
                             <div class="card-body text-center p-3">
                                 <i class="bi bi-graph-up display-6 text-warning mb-2"></i>
                                 <h6 class="card-title mb-1">Reports</h6>
-                                <p class="card-text small text-muted mb-0">View analytics</p>
+                                <p class="card-text small text-muted mb-0">Lihat analisis</p>
                             </div>
                         </a>
                     </div>
@@ -344,10 +344,10 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-exclamation-triangle fs-4 me-3"></i>
                         <div>
-                            <h6 class="alert-heading mb-1">Low Stock Alert</h6>
+                            <h6 class="alert-heading mb-1">Peringatan Stok Menipis</h6>
                             <p class="mb-0 small">
                                 {{ low_stock_products }} product{% if low_stock_products > 1 %}s{% endif %} need{% if low_stock_products == 1 %}s{% endif %} restocking.
-                                <a href="{{ url_for('products.index') }}?stock_status=low" class="alert-link">View products</a>
+                                <a href="{{ url_for('products.index') }}?stock_status=low" class="alert-link">Lihat produk</a>
                             </p>
                         </div>
                     </div>
@@ -367,26 +367,26 @@
                 <div class="row text-center">
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <h3 class="text-primary mb-1" id="avgTransactionValue">$0.00</h3>
-                            <small class="text-muted">Avg. Transaction Value</small>
+                            <h3 class="text-primary mb-1" id="avgTransactionValue">Rp0.00</h3>
+                            <small class="text-muted">Rerata Harga Transaksi</small>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
                             <h3 class="text-success mb-1" id="totalTransactions">0</h3>
-                            <small class="text-muted">Total Transactions</small>
+                            <small class="text-muted">Total Transaksi</small>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <h3 class="text-warning mb-1" id="totalRevenue">$0.00</h3>
-                            <small class="text-muted">Total Revenue</small>
+                            <h3 class="text-warning mb-1" id="totalRevenue">Rp0.00</h3>
+                            <small class="text-muted">Total Pendapatan</small>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
                             <h3 class="text-info mb-1" id="busiestDay">-</h3>
-                            <small class="text-muted">Busiest Day</small>
+                            <small class="text-muted">Hari Tersibuk</small>
                         </div>
                     </div>
                 </div>
@@ -534,9 +534,9 @@ function updatePerformanceMetrics(data) {
     
     const busiestDay = busiestDayIndex >= 0 ? data.dates[busiestDayIndex] : '-';
     
-    document.getElementById('avgTransactionValue').textContent = `$${avgTransaction.toFixed(2)}`;
+    document.getElementById('avgTransactionValue').textContent = `Rp${avgTransaction.toFixed(2)}`;
     document.getElementById('totalTransactions').textContent = totalTransactions;
-    document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+    document.getElementById('totalRevenue').textContent = `Rp${totalRevenue.toFixed(2)}`;
     document.getElementById('busiestDay').textContent = busiestDay;
 }
 

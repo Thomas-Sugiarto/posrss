@@ -48,10 +48,10 @@
         <div class="row align-items-center">
             <div class="col">
                 <h1 class="h2 mb-1">
-                    <i class="bi bi-cash-coin"></i> Sales Report
+                    <i class="bi bi-cash-coin"></i> Laporan Penjualan
                 </h1>
                 <p class="mb-0 opacity-75">
-                    Detailed analysis of sales transactions and revenue
+                    Analisis transaksi penjualan dan pendapatan secara detail
                 </p>
             </div>
             <div class="col-auto">
@@ -74,34 +74,34 @@
         <div class="col-md-3">
             <div class="card stats-card border-primary">
                 <div class="card-body text-center">
-                    <h6 class="card-title text-muted mb-0">Total Sales</h6>
+                    <h6 class="card-title text-muted mb-0">Total Penjualan</h6>
                     <h3 class="text-primary mb-0">{{ total_sales }}</h3>
-                    <small class="text-muted">Transactions</small>
+                    <small class="text-muted">Transaksi</small>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card stats-card border-success">
                 <div class="card-body text-center">
-                    <h6 class="card-title text-muted mb-0">Total Revenue</h6>
-                    <h3 class="text-success mb-0">${{ "%.2f"|format(total_revenue) }}</h3>
-                    <small class="text-muted">Gross income</small>
+                    <h6 class="card-title text-muted mb-0">Total Pendapatan</h6>
+                    <h3 class="text-success mb-0">Rp{{ "%.2f"|format(total_revenue) }}</h3>
+                    <small class="text-muted">Pendapatan kotor</small>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card stats-card border-warning">
                 <div class="card-body text-center">
-                    <h6 class="card-title text-muted mb-0">Average Sale</h6>
-                    <h3 class="text-warning mb-0">${{ "%.2f"|format(avg_sale) }}</h3>
-                    <small class="text-muted">Per transaction</small>
+                    <h6 class="card-title text-muted mb-0">Rerata penjualan</h6>
+                    <h3 class="text-warning mb-0">Rp{{ "%.2f"|format(avg_sale) }}</h3>
+                    <small class="text-muted">Per transaksi</small>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card stats-card border-info">
                 <div class="card-body text-center">
-                    <h6 class="card-title text-muted mb-0">Time Period</h6>
+                    <h6 class="card-title text-muted mb-0">Periode Waktu</h6>
                     <h3 class="text-info mb-0">
                         {% if request.args.get('start_date') and request.args.get('end_date') %}
                             Custom
@@ -143,12 +143,12 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-text">
-                                    Leave dates empty to view all transactions
+                                    Kosongkan tanggal untuk lihat semua transaksi
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-primary w-100">
-                                    <i class="bi bi-filter"></i> Apply Filters
+                                    <i class="bi bi-filter"></i> Jalankan Filter
                                 </button>
                             </div>
                         </div>
@@ -164,10 +164,10 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-list-ul"></i> Sales Transactions
+                        <i class="bi bi-list-ul"></i> Transaksi Penjualan
                     </h5>
                     <span class="text-muted small">
-                        Showing {{ sales|length }} transactions
+                        Menunjukkan {{ sales|length }} transaksi
                     </span>
                 </div>
                 <div class="card-body">
@@ -176,13 +176,13 @@
                         <table class="table table-hover sales-table">
                             <thead>
                                 <tr>
-                                    <th>Receipt No</th>
-                                    <th>Date & Time</th>
+                                    <th>No Struk</th>
+                                    <th>Tanggal & Waktu</th>
                                     <th>Customer</th>
                                     <th class="text-center">Items</th>
-                                    <th class="text-end">Total Amount</th>
-                                    <th>Payment Method</th>
-                                    <th class="text-center">Actions</th>
+                                    <th class="text-end">Total Biaya</th>
+                                    <th>Metode Pembayaran</th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -213,11 +213,11 @@
                                     <td>
                                         {% if sale.payment_method == 'cash' %}
                                         <span class="badge bg-success payment-badge">
-                                            <i class="bi bi-cash"></i> Cash
+                                            <i class="bi bi-cash"></i> Tunai
                                         </span>
                                         {% elif sale.payment_method == 'card' %}
                                         <span class="badge bg-primary payment-badge">
-                                            <i class="bi bi-credit-card"></i> Card
+                                            <i class="bi bi-credit-card"></i> Kartu
                                         </span>
                                         {% elif sale.payment_method == 'transfer' %}
                                         <span class="badge bg-info payment-badge">
@@ -250,7 +250,7 @@
                             </tbody>
                             <tfoot>
                                 <tr class="table-active">
-                                    <td colspan="4" class="text-end"><strong>Grand Total:</strong></td>
+                                    <td colspan="4" class="text-end"><strong>Total Akhir:</strong></td>
                                     <td class="text-end"><strong>${{ "%.2f"|format(total_revenue) }}</strong></td>
                                     <td colspan="2"></td>
                                 </tr>
@@ -289,7 +289,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-pie-chart"></i> Payment Method Breakdown
+                        <i class="bi bi-pie-chart"></i> Rincian Metode Pembayaran
                     </h5>
                 </div>
                 <div class="card-body">
@@ -301,7 +301,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-clock-history"></i> Sales by Hour
+                        <i class="bi bi-clock-history"></i> Penjualan per Jam
                     </h5>
                 </div>
                 <div class="card-body">
@@ -318,7 +318,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Sale Details</h5>
+                <h5 class="modal-title">Detail Penjualan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="saleDetailsContent">

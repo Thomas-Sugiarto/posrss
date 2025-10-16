@@ -5,7 +5,6 @@
 {% block styles %}
 <style>
     .stats-card {
-        border: none;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         transition: transform 0.2s;
     }
@@ -93,14 +92,14 @@
     <div class="row mb-4">
         <div class="col">
             <h1 class="h2 mb-0">
-                <i class="bi bi-graph-up"></i> Reports & Analytics
+                <i class="bi bi-graph-up"></i> Laporan & Analisis
             </h1>
-            <small class="text-muted">Business insights and performance analytics</small>
+            <small class="text-muted">Insight bisnis dan analisa performa</small>
         </div>
         <div class="col-auto">
             <div class="dropdown">
                 <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    <i class="bi bi-download"></i> Export Reports
+                    <i class="bi bi-download"></i> Export Laporan
                 </button>
                 <ul class="dropdown-menu">
                     <li>
@@ -125,8 +124,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="card-title text-muted mb-0">Today's Revenue</h6>
-                            <h3 class="mb-0" id="todayRevenue">$0.00</h3>
+                            <h6 class="card-title text-muted mb-0">Pendapatan Hari ini</h6>
+                            <h3 class="mb-0" id="todayRevenue">Rp0.00</h3>
                             <small class="text-muted" id="todaySalesCount">0 sales</small>
                         </div>
                         <div class="align-self-center">
@@ -141,12 +140,12 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="card-title text-muted mb-0">This Week</h6>
-                            <h3 class="mb-0" id="weekRevenue">$0.00</h3>
+                            <h6 class="card-title text-muted mb-0">Minggu ini</h6>
+                            <h3 class="mb-0" id="weekRevenue">Rp0.00</h3>
                             <small class="text-muted" id="weekSalesCount">0 sales</small>
                         </div>
                         <div class="align-self-center">
-                            <i class="bi bi-calendar-week stats-icon text-success"></i>
+                            <i class="bi bi-calendar-range stats-icon text-success"></i>
                         </div>
                     </div>
                 </div>
@@ -157,12 +156,12 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="card-title text-muted mb-0">This Month</h6>
-                            <h3 class="mb-0" id="monthRevenue">$0.00</h3>
+                            <h6 class="card-title text-muted mb-0">Bulan ini</h6>
+                            <h3 class="mb-0" id="monthRevenue">Rp0.00</h3>
                             <small class="text-muted" id="monthSalesCount">0 sales</small>
                         </div>
                         <div class="align-self-center">
-                            <i class="bi bi-calendar-month stats-icon text-warning"></i>
+                            <i class="bi bi-calendar stats-icon text-warning"></i>
                         </div>
                     </div>
                 </div>
@@ -173,9 +172,9 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="card-title text-muted mb-0">Avg. Sale</h6>
-                            <h3 class="mb-0" id="avgSale">$0.00</h3>
-                            <small class="text-muted">Per transaction</small>
+                            <h6 class="card-title text-muted mb-0">Rerata Penjualan</h6>
+                            <h3 class="mb-0" id="avgSale">Rp0.00</h3>
+                            <small class="text-muted">Per transaksi</small>
                         </div>
                         <div class="align-self-center">
                             <i class="bi bi-graph-up stats-icon text-info"></i>
@@ -192,14 +191,14 @@
         <div class="chart-container">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">
-                    <i class="bi bi-bar-chart"></i> Sales Trend (Last 7 Days)
+                    <i class="bi bi-bar-chart"></i> Tren Penjualan (7 Hari Terakhir)
                 </h5>
                 <div class="btn-group btn-group-sm">
                     <button type="button" class="btn btn-outline-secondary active" data-metric="revenue">
-                        Revenue
+                        Pendapatan
                     </button>
                     <button type="button" class="btn btn-outline-secondary" data-metric="count">
-                        Transaction Count
+                        Jumlah Transaksi
                     </button>
                 </div>
             </div>
@@ -214,7 +213,7 @@
     <div class="col-lg-4">
         <div class="chart-container">
             <h5 class="mb-3">
-                <i class="bi bi-star"></i> Top Products
+                <i class="bi bi-star"></i> Produk Teratas
             </h5>
             <!-- Tambahkan max-height untuk daftar produk -->
             <div id="topProductsList" style="max-height: 250px; overflow-y: auto;">
@@ -222,7 +221,7 @@
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <p class="mt-2 text-muted">Loading top products...</p>
+                    <p class="mt-2 text-muted">Loading Produk Teratas...</p>
                 </div>
             </div>
         </div>
@@ -233,7 +232,7 @@
     <div class="row">
         <div class="col-12">
             <h4 class="mb-3">
-                <i class="bi bi-file-text"></i> Detailed Reports
+                <i class="bi bi-file-text"></i> Detail Laporan
             </h4>
         </div>
 
@@ -242,14 +241,14 @@
             <div class="card report-card">
                 <div class="card-body text-center">
                     <div class="text-primary mb-3">
-                        <i class="bi bi-cash-coin display-4"></i>
+                        <i class="bi bi-cash-stack display-4"></i>
                     </div>
-                    <h5 class="card-title">Sales Report</h5>
+                    <h5 class="card-title">Laporan Penjualan</h5>
                     <p class="card-text text-muted">
-                        Detailed sales transactions with filters by date range and payment methods
+                        Transaksi penjualan yang detail dengan filter berdasarkan hari dan metode pembayaran
                     </p>
                     <a href="{{ url_for('reports.sales_report') }}" class="btn btn-primary">
-                        <i class="bi bi-arrow-right"></i> View Report
+                        <i class="bi bi-arrow-right"></i> Lihat Laporan
                     </a>
                 </div>
             </div>
@@ -262,9 +261,9 @@
                     <div class="text-success mb-3">
                         <i class="bi bi-box-seam display-4"></i>
                     </div>
-                    <h5 class="card-title">Product Performance</h5>
+                    <h5 class="card-title">Performa Produk</h5>
                     <p class="card-text text-muted">
-                        Analyze product sales, inventory turnover, and profitability metrics
+                        Analisa penjualan produk, perputaran persediaan, dan metriks keuntungan
                     </p>
                     <button class="btn btn-outline-secondary" disabled>
                         <i class="bi bi-clock"></i> Coming Soon
@@ -280,9 +279,9 @@
                     <div class="text-info mb-3">
                         <i class="bi bi-people display-4"></i>
                     </div>
-                    <h5 class="card-title">Customer Analytics</h5>
+                    <h5 class="card-title">Analisis Customer</h5>
                     <p class="card-text text-muted">
-                        Customer purchasing patterns, lifetime value, and retention analysis
+                        Pola pembelian pelanggan, nilai seumur hidup, dan analisis retensi
                     </p>
                     <button class="btn btn-outline-secondary" disabled>
                         <i class="bi bi-clock"></i> Coming Soon
@@ -305,7 +304,7 @@
                     <i class="bi bi-file-earmark-excel display-4 text-success mb-3"></i>
                     <h5 class="card-title">Export to Excel</h5>
                     <p class="card-text text-muted small">
-                        Download all sales data in Excel format for further analysis
+                        Unduh semua data penjualandalam Excel Untuk analisis lebih lanjut
                     </p>
                 </div>
             </a>
@@ -316,7 +315,7 @@
                     <i class="bi bi-file-earmark-pdf display-4 text-danger mb-3"></i>
                     <h5 class="card-title">Export to PDF</h5>
                     <p class="card-text text-muted small">
-                        Generate a printable PDF report of recent sales transactions
+                        Generate PDF yang dapat diprint untuk laporan transaksi terbaru
                     </p>
                 </div>
             </a>
@@ -325,9 +324,9 @@
             <a href="{{ url_for('sales.history') }}" class="card quick-action-btn text-decoration-none">
                 <div class="card-body text-center">
                     <i class="bi bi-clock-history display-4 text-primary mb-3"></i>
-                    <h5 class="card-title">Sales History</h5>
+                    <h5 class="card-title">Riwayat Penjualan</h5>
                     <p class="card-text text-muted small">
-                        View detailed transaction history with search and filter options
+                        Lihat riwayat transaksi secara detail denga opsi search dan filter
                     </p>
                 </div>
             </a>
@@ -368,22 +367,22 @@ function updateStats(data) {
     
     // Today's stats
     if (todayData) {
-        document.getElementById('todayRevenue').textContent = `$${todayData.revenue.toFixed(2)}`;
+        document.getElementById('todayRevenue').textContent = `Rp${todayData.revenue.toFixed(2)}`;
         document.getElementById('todaySalesCount').textContent = `${todayData.count} sales`;
     }
     
     // Weekly stats
     const weekRevenue = data.daily_sales.reduce((sum, day) => sum + day.revenue, 0);
     const weekCount = data.daily_sales.reduce((sum, day) => sum + day.count, 0);
-    document.getElementById('weekRevenue').textContent = `$${weekRevenue.toFixed(2)}`;
+    document.getElementById('weekRevenue').textContent = `Rp${weekRevenue.toFixed(2)}`;
     document.getElementById('weekSalesCount').textContent = `${weekCount} sales`;
     
     // Average sale
     const avgSale = weekCount > 0 ? weekRevenue / weekCount : 0;
-    document.getElementById('avgSale').textContent = `$${avgSale.toFixed(2)}`;
+    document.getElementById('avgSale').textContent = `Rp${avgSale.toFixed(2)}`;
     
     // Monthly (approximate - using week data for demo)
-    document.getElementById('monthRevenue').textContent = `$${(weekRevenue * 4).toFixed(2)}`;
+    document.getElementById('monthRevenue').textContent = `Rp${(weekRevenue * 4).toFixed(2)}`;
     document.getElementById('monthSalesCount').textContent = `${weekCount * 4} sales`;
 }
 
@@ -415,7 +414,7 @@ function renderSalesTrendChart(dailySales) {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Revenue ($)',
+                label: 'Revenue (Rp)',
                 data: revenueData,
                 borderColor: '#0d6efd',
                 backgroundColor: 'rgba(13, 110, 253, 0.1)',

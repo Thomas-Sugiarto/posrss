@@ -5,7 +5,7 @@
         <h1 class="h2"><i class="bi bi-geo-alt"></i> My Address</h1>
         <div>
             <a href="{{ url_for('marketplace.index') }}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Back to Marketplace
+                <i class="bi bi-arrow-left"></i> Kembali ke Marketplace
             </a>
         </div>
     </div>
@@ -14,7 +14,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Address Information</h5>
+                    <h5 class="mb-0">Informasi Alamat</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST">
@@ -54,9 +54,9 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle"></i> Save Address
+                            <i class="bi bi-check-circle"></i> Simpan Alamat
                         </button>
-                        <a href="{{ url_for('marketplace.index') }}" class="btn btn-secondary">Cancel</a>
+                        <a href="{{ url_for('marketplace.index') }}" class="btn btn-secondary">Batal</a>
                     </form>
                 </div>
             </div>
@@ -65,7 +65,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0">Current Address</h6>
+                    <h6 class="mb-0">Alamat Sekarang</h6>
                 </div>
                 <div class="card-body">
                     {% if tenant.address %}
@@ -84,8 +84,8 @@
                     {% else %}
                     <div class="text-center text-muted py-4">
                         <i class="bi bi-geo-alt display-4"></i>
-                        <p class="mt-2">No address saved</p>
-                        <small>Please add your delivery address.</small>
+                        <p class="mt-2">Tidak ada alamat tersimpan</p>
+                        <small>Mohon tambahkan alamat pengiriman Anda.</small>
                     </div>
                     {% endif %}
                 </div>
@@ -94,10 +94,10 @@
             <div class="card mt-4">
                 <div class="card-body text-center">
                     <a href="{{ url_for('marketplace.restock_orders') }}" class="btn btn-outline-success w-100 mb-2">
-                        <i class="bi bi-list-check"></i> My Orders
+                        <i class="bi bi-list-check"></i> Pesanan Saya
                     </a>
                     <a href="{{ url_for('marketplace.index') }}" class="btn btn-outline-primary w-100">
-                        <i class="bi bi-cart-plus"></i> Continue Shopping
+                        <i class="bi bi-cart-plus"></i> Lanjut Belanja
                     </a>
                 </div>
             </div>

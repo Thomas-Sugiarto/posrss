@@ -7,13 +7,13 @@
     <div class="row mb-4">
         <div class="col">
             <h1 class="h3 mb-0">
-                <i class="bi bi-clock-history"></i> Sales History
+                <i class="bi bi-clock-history"></i> Riwayat Penjualan
             </h1>
-            <small class="text-muted">View and manage your sales transactions</small>
+            <small class="text-muted">Lihat dan kelola transaksi penjualan Anda</small>
         </div>
         <div class="col-auto">
             <a href="{{ url_for('sales.pos') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> New Sale
+                <i class="bi bi-plus-circle"></i> Penjualan Baru
             </a>
         </div>
     </div>
@@ -23,15 +23,15 @@
         <div class="card-body">
             <form method="GET" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Date</label>
+                    <label class="form-label">Tanggal</label>
                     <input type="date" class="form-control" name="date" value="{{ date_filter }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Payment Method</label>
+                    <label class="form-label">Metode Pembayaran</label>
                     <select class="form-select" name="payment_method">
-                        <option value="">All Methods</option>
-                        <option value="cash" {% if payment_filter == 'cash' %}selected{% endif %}>Cash</option>
-                        <option value="card" {% if payment_filter == 'card' %}selected{% endif %}>Card</option>
+                        <option value="">Semua Metode</option>
+                        <option value="cash" {% if payment_filter == 'cash' %}selected{% endif %}>Tunai</option>
+                        <option value="card" {% if payment_filter == 'card' %}selected{% endif %}>Kartu</option>
                         <option value="transfer" {% if payment_filter == 'transfer' %}selected{% endif %}>Transfer</option>
                         <option value="qris" {% if payment_filter == 'qris' %}selected{% endif %}>QRIS</option>
                     </select>
@@ -55,14 +55,14 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Receipt #</th>
-                            <th>Date & Time</th>
+                            <th>Struk #</th>
+                            <th>Tanggal & Waktu</th>
                             <th>Customer</th>
                             <th>Items</th>
-                            <th>Total Amount</th>
-                            <th>Payment Method</th>
-                            <th>Cashier</th>
-                            <th>Actions</th>
+                            <th>Total</th>
+                            <th>Metode Pembayaran</th>
+                            <th>Kasir</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,9 +116,9 @@
                         <tr>
                             <td colspan="8" class="text-center py-4">
                                 <i class="bi bi-receipt display-4 text-muted"></i>
-                                <p class="mt-2 text-muted">No sales records found</p>
+                                <p class="mt-2 text-muted">Tidak ada penjualan ditemukan</p>
                                 <a href="{{ url_for('sales.pos') }}" class="btn btn-primary mt-2">
-                                    <i class="bi bi-plus-circle"></i> Create First Sale
+                                    <i class="bi bi-plus-circle"></i> Buat penjualan pertama
                                 </a>
                             </td>
                         </tr>

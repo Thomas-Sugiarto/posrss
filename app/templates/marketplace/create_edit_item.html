@@ -54,7 +54,7 @@
                         <div class="row">
                             <!-- Price Field -->
                             <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Price</label>
+                                <label for="price" class="form-label">Harga</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
                                     <input type="number" class="form-control {% if form.price.errors %}is-invalid{% endif %}" 
@@ -72,7 +72,7 @@
 
                             <!-- Stock Field -->
                             <div class="col-md-6 mb-3">
-                                <label for="stock" class="form-label">Stock Quantity</label>
+                                <label for="stock" class="form-label">Kuantitas Stok</label>
                                 <input type="number" class="form-control {% if form.stock.errors %}is-invalid{% endif %}" 
                                        id="stock" name="stock" value="{{ form.stock.data or '0' }}" 
                                        min="0" required>
@@ -102,7 +102,7 @@
 
                         <!-- Image Field -->
                         <div class="mb-3">
-                            <label for="image" class="form-label">Product Image</label>
+                            <label for="image" class="form-label">Gambar Produk</label>
                             <input type="file" class="form-control {% if form.image.errors %}is-invalid{% endif %}" 
                                    id="image" name="image" accept=".jpg,.jpeg,.png,.gif">
                             {% if form.image.errors %}
@@ -119,7 +119,7 @@
                             <!-- Show current image if editing -->
                             {% if form._obj and form._obj.image_url %}
                             <div class="mt-2">
-                                <label class="form-label">Current Image:</label>
+                                <label class="form-label">Gambar Sekarang:</label>
                                 <div>
                                     <img src="{{ form._obj.image_url }}" alt="{{ form._obj.name }}" 
                                          class="img-thumbnail" style="max-height: 200px;">

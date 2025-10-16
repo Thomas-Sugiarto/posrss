@@ -32,9 +32,9 @@
     <div class="row mb-4">
         <div class="col">
             <h1 class="h2 mb-0">
-                <i class="bi bi-gear"></i> Settings
+                <i class="bi bi-gear"></i> Pengaturan
             </h1>
-            <small class="text-muted">Manage your business settings and preferences</small>
+            <small class="text-muted">Kelola pengaturan bisnis dan preferensi Anda</small>
         </div>
     </div>
 
@@ -46,11 +46,11 @@
                 <div class="card settings-card h-100">
                     <div class="card-body text-center">
                         <div class="text-primary settings-icon">
-                            <i class="bi bi-building"></i>
+                            <i class="bi bi-briefcase"></i>
                         </div>
-                        <h5 class="card-title">Business Info</h5>
+                        <h5 class="card-title">Info Bisnis</h5>
                         <p class="card-text text-muted small">
-                            Update your business name, contact information, and address
+                            Perbarui nama bisnis, informasi kontak, dan alamat
                         </p>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                         </div>
                         <h5 class="card-title">Printer Setup</h5>
                         <p class="card-text text-muted small">
-                            Configure receipt printer settings and connection
+                            Konfigurasikan pengaturan dan koneksi printer struk
                         </p>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                         </div>
                         <h5 class="card-title">Barcode Scanner</h5>
                         <p class="card-text text-muted small">
-                            Configure barcode scanner settings and preferences
+                            Konfigurasikan pengaturan dan preferensi scanner barcode
                         </p>
                     </div>
                 </div>
@@ -98,18 +98,18 @@
                     <div class="text-info settings-icon">
                         <i class="bi bi-info-circle"></i>
                     </div>
-                    <h5 class="card-title">System Status</h5>
+                    <h5 class="card-title">Status Sistem</h5>
                     <div class="text-start small">
                         <div class="d-flex justify-content-between mb-2">
-                            <span>Business:</span>
+                            <span>Bisnis:</span>
                             <span class="badge bg-success">{{ tenant.name }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Printer:</span>
                             {% if tenant.printer_settings %}
-                                <span class="badge bg-success">Configured</span>
+                                <span class="badge bg-success">Terkonfigurasi</span>
                             {% else %}
-                                <span class="badge bg-warning">Not Set</span>
+                                <span class="badge bg-warning">Belum Diatur</span>
                             {% endif %}
                         </div>
                         <div class="d-flex justify-content-between">
@@ -117,7 +117,7 @@
                             {% if tenant.barcode_scanner_type %}
                                 <span class="badge bg-success">{{ tenant.barcode_scanner_type|title }}</span>
                             {% else %}
-                                <span class="badge bg-warning">Not Set</span>
+                                <span class="badge bg-warning">Belum Diatur</span>
                             {% endif %}
                         </div>
                     </div>
@@ -147,21 +147,21 @@
                         <div class="col-md-4">
                             <div class="d-grid">
                                 <a href="{{ url_for('products.index') }}" class="btn btn-outline-primary">
-                                    <i class="bi bi-box-seam"></i> Manage Products
+                                    <i class="bi bi-box-seam"></i> Kelola Produk
                                 </a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="d-grid">
                                 <a href="{{ url_for('customers.index') }}" class="btn btn-outline-primary">
-                                    <i class="bi bi-people"></i> Manage Customers
+                                    <i class="bi bi-people"></i> Kelola Pelanggan
                                 </a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="d-grid">
                                 <a href="{{ url_for('settings.user_management') }}" class="btn btn-outline-primary">
-                                    <i class="bi bi-person-workspace"></i> Manage Cashiers
+                                    <i class="bi bi-person-workspace"></i> Kelola Kasir
                                 </a>
                             </div>
                         </div>

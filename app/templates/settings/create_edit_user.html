@@ -19,16 +19,16 @@
                         <hr>
                         <p class="text-muted small">
                             {% if 'Create' in legend %}
-                                Password is required for new users.
+                                Pengguna baru memerlukan kata sandi.
                             {% else %}
-                                Leave password fields blank if you do not want to change the password.
+                                Kosongkan kata sandi jika tidak ingin menggantinya.
                             {% endif %}
                         </p>
                         {{ render_field(form.password) }}
                         {{ render_field(form.confirm_password) }}
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="{{ url_for('settings.user_management') }}" class="btn btn-secondary">Cancel</a>
+                            <a href="{{ url_for('settings.user_management') }}" class="btn btn-secondary">Batal</a>
                             {{ form.submit(class="btn btn-primary") }}
                         </div>
                     </form>

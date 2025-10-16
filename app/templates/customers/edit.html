@@ -37,16 +37,16 @@
                 <div class="col">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ url_for('customers.index') }}">Customers</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('customers.index') }}">Pelanggan</a></li>
                             <li class="breadcrumb-item"><a href="{{ url_for('customers.detail', customer_id=customer.id) }}">{{ customer.name }}</a></li>
-                            <li class="breadcrumb-item active">Edit</li>
+                            <li class="breadcrumb-item active">Ubah</li>
                         </ol>
                     </nav>
                     
                     <h1 class="h2 mb-0">
                         <i class="bi bi-pencil"></i> {{ title }}
                     </h1>
-                    <small class="text-muted">Update customer information</small>
+                    <small class="text-muted">Perbarui informasi pelanggan</small>
                 </div>
             </div>
 
@@ -54,7 +54,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-person-badge"></i> Edit Customer Information
+                        <i class="bi bi-person-badge"></i> Ubah Informasi Pelanggan
                     </h5>
                 </div>
                 <div class="card-body">
@@ -68,8 +68,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
-                                    {{ form.name(class="form-control", placeholder="Enter customer full name") }}
+                                    <label for="name" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                                    {{ form.name(class="form-control", placeholder="Masukkan nama lengkap pelanggan") }}
                                     {% if form.name.errors %}
                                         <div class="text-danger small mt-1">
                                             {% for error in form.name.errors %}
@@ -81,8 +81,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone Number</label>
-                                    {{ form.phone(class="form-control", placeholder="e.g., +62 812-3456-7890") }}
+                                    <label for="phone" class="form-label">Nomor</label>
+                                    {{ form.phone(class="form-control", placeholder="Contoh: +62 812-3456-7890") }}
                                     {% if form.phone.errors %}
                                         <div class="text-danger small mt-1">
                                             {% for error in form.phone.errors %}
@@ -95,8 +95,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            {{ form.email(class="form-control", placeholder="customer@example.com") }}
+                            <label for="email" class="form-label">Alamat Email</label>
+                            {{ form.email(class="form-control", placeholder="customer@contoh.com") }}
                             {% if form.email.errors %}
                                 <div class="text-danger small mt-1">
                                     {% for error in form.email.errors %}
@@ -108,7 +108,7 @@
 
                         <div class="mb-3">
                             <label for="address" class="form-label">Address</label>
-                            {{ form.address(class="form-control", rows="4", placeholder="Enter complete address including city and postal code") }}
+                            {{ form.address(class="form-control", rows="4", placeholder="Masukkan alamat lengkap termasuk kota dan kode pos") }}
                             {% if form.address.errors %}
                                 <div class="text-danger small mt-1">
                                     {% for error in form.address.errors %}
@@ -120,14 +120,14 @@
 
                         <div class="d-flex justify-content-between">
                             <a href="{{ url_for('customers.detail', customer_id=customer.id) }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left"></i> Cancel
+                                <i class="bi bi-arrow-left"></i> Batal
                             </a>
                             <div>
                                 <a href="{{ url_for('customers.detail', customer_id=customer.id) }}" class="btn btn-outline-secondary me-2">
-                                    <i class="bi bi-eye"></i> View Profile
+                                    <i class="bi bi-eye"></i> Lihat Profil
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-circle"></i> Update Customer
+                                    <i class="bi bi-check-circle"></i> Perbarui Pelanggan
                                 </button>
                             </div>
                         </div>
